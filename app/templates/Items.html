@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Items</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: white;
+            background-color: #b39ddb;
+            margin-right: 15px;
+        }
+        .item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="blue-grey lighten-5">
+    <!-- Top Navigation Bar -->
+    <nav class="purple lighten-4">
+        <div class="nav-wrapper container">
+            <a href="#" class="brand-logo center">Lost Items</a>
+            <a href="#" class="sidenav-trigger" data-target="mobile-menu"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#"><i class="material-icons">account_circle</i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Lost Items List -->
+    <div class="container">
+        <ul class="collection">
+            <li class="collection-item avatar">
+                <span class="avatar">A</span>
+                <span class="title"><strong>Iphone 12 cellphone</strong></span>
+                <p>Electronics</p>
+                <img src="https://plus.unsplash.com/premium_photo-1683910767532-3a25b821f7ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Iphone 12" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">N</span>
+                <span class="title"><strong>Nike Schoolbag</strong></span>
+                <p>Clothing</p>
+                <img src="https://plus.unsplash.com/premium_photo-1683910767532-3a25b821f7ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Nike Bag" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">M</span>
+                <span class="title"><strong>Acer Laptop</strong></span>
+                <p>Electronics</p>
+                <img src="https://plus.unsplash.com/premium_photo-1683910767532-3a25b821f7ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Laptop" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">N</span>
+                <span class="title"><strong>Samsung Galaxy A13</strong></span>
+                <p>Electronics</p>
+                <img src="https://plus.unsplash.com/premium_photo-1683910767532-3a25b821f7ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Samsung Phone" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">Z</span>
+                <span class="title"><strong>Dropy Hoodie</strong></span>
+                <p>Clothing</p>
+                <img src="https://plus.unsplash.com/premium_photo-1683910767532-3a25b821f7ae?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Hoodie" class="item-image right">
+            </li>
+        </ul>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <ul class="sidenav" id="mobile-menu">
+        <li><a href="#"><i class="material-icons">account_circle</i> Profile</a></li>
+    </ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+        });
+    </script>
+</body>
+</html>

@@ -20,5 +20,9 @@ def register():
         print("Register form submitted", request.form)
     return render_template('register.html')
 
+@app.route('/lost-items')
+def lost_items():
+    return render_template('items.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
