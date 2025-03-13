@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Lost Item</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            color: #37474f;
+        }
+        nav {
+            background-color: #6a1b9a; /* Dark purple */
+        }
+        .container {
+            margin-top: 30px;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h5 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #6a1b9a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+            <a href="#" class="sidenav-trigger" data-target="mobile-menu">
+                <i class="material-icons">menu</i>
+            </a>
+            <a href="#" class="brand-logo">Lost Items</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#"><i class="material-icons">account_circle</i></a></li>
+            </ul>
+    </nav>
+
+    <!-- Form Container -->
+    <div class="container">
+        <h5>Add a Lost Item</h5>
+        <form action="#" method="POST" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
+            <!-- Category -->
+            <div class="input-field">
+                <select id="category" name="category">
+                    <option value="" disabled selected>Choose category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Others">Others</option>
+                </select>
+                <label for="category">Category</label>
+            </div>
+
+            <!-- Item Name -->
+            <div class="input-field">
+                <input type="text" id="item_name" name="item_name" required>
+                <label for="item_name">Item Name</label>
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>Upload Photo</span>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Upload an image">
+                </div>
+            </div>
+
+            <!-- Collection Date -->
+            <div class="input-field">
+                <input type="text" id="collection_date" name="collection_date" class="datepicker">
+                <label for="collection_date">Collection Date</label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn waves-effect waves-light">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            M.FormSelect.init(document.querySelectorAll('select'));
+            M.Datepicker.init(document.querySelectorAll('.datepicker'), { format: 'yyyy-mm-dd' });
+
+            // Simulated form submission for POST
+            window.handleSubmit = function(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                const entry = {
+                    category: formData.get("category"),
+                    item_name: formData.get("item_name"),
+                    collection_date: formData.get("collection_date"),
+                    photo: formData.get("photo") ? formData.get("photo").name : "No file selected"
+                };
+                console.log("New Lost Item Entry:", entry);
+                alert("Item submitted! Check console for details.");
+            };
+        });
+    </script>
+</body>
+</html>
