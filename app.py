@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request
 import mysql.connector
 
-# MySQL Connection
-db = mysql.connector.connect(
-    host="localhost:3306",
-    user="root",  # Change to your MySQL username
-    password="your_password",  # Change to your MySQL password
-    database="lost_and_found"
-)
-cursor = db.cursor()
+# # MySQL Connection
+# db = mysql.connector.connect(
+#     host="localhost:3306",
+#     user="root",  # Change to your MySQL username
+#     password="your_password",  # Change to your MySQL password
+#     database="lost_and_found"
+# )
+# cursor = db.cursor()
 
 app = Flask(__name__, template_folder="app/templates")
 
