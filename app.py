@@ -68,8 +68,11 @@ def add_item():
     if request.method == 'POST':
         category = request.form.get('category')
         item_name = request.form.get('item_name')
-        uploaded_date = request.form.get('uploaded_date')
-        collection_date = request.form.get('collection_date')
+        uploaded_date = request.form.get('ploaded_date')
+        description=request.form.get('description')
+        found_day=request.form.get('found_day')
+        found_by=request.form.get('found_by')
+        campus=request.form.get('campus')
         photo = request.files.get('photo')
 
         photo_filename = photo.filename if photo else "No file uploaded"
@@ -78,7 +81,10 @@ def add_item():
             "category": category,
             "item_name": item_name,
             "uploaded_date": uploaded_date,
-            "collection_date": collection_date,
+            "description": description,
+            "found_day":found_day,
+            "found_by": found_by,
+            "campus":campus,
             "photo": photo_filename
         }
 
@@ -86,7 +92,13 @@ def add_item():
 
         print("New Lost Item:", new_item)
 
+        return redirect(url_for('success'))
+    
     return render_template('addItem.html')
+
+@app.route('/success')
+def success():
+    return render_template('success.html') 
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
