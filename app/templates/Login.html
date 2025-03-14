@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Use flex-direction column */
+            min-height: 100vh;
+            background-color: #f0f2f5;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background-color: #3f0e40;
+            color: white;
+            padding: 10px 20px;
+            text-align: right;
+        }
+
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        /* Main Content */
+        .login-container {
+            flex-grow: 1; /* Allow login-container to grow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        .login-card h2 {
+            color: #3f0e40;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3f0e40;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .login-button:hover {
+            background-color: #5e2c60;
+        }
+
+        .login-card p {
+            margin-top: 20px;
+        }
+
+        .login-card a {
+            color: #3f0e40;
+            text-decoration: none;
+        }
+
+        .login-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            background-color: #f4f4f4;
+            color: #555;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 0.8em;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+
+        <a href="/">HOME</a>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <h2>SIGN IN</h2>
+            <form>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-button">SIGN IN</button>
+            </form>
+            <p>Don't have an account? <a href="/register">REGISTER</a></p>
+            <p><a href="/forgot-password">FORGOTTEN PASSWORD?</a></p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        &copy; 2025 Inhlwathi-Bytes Inc.
+    </div>
+</body>
+</html>

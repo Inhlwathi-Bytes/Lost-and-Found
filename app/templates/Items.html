@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Items</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+
+        nav {
+    background-color: #3f0e40;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 90px;
+    margin: 0 auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    height: 100%;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+}
+
+body {
+    padding-top: 80px;
+
+}
+
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+   <nav>
+        <div class="logo-container">
+            <img src="/static/images/The_Durban_University_of_Technology_new_log.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title"></span>
+        </div>
+        <ul>
+            <li><a href="/">HOME</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/help">HELP</a></li>
+        </ul>
+    </nav>
+        <ul class="collection">
+            <li class="collection-item avatar">
+                <span class="avatar">A</span>
+                <span class="title">Iphone 12 cellphone</span>
+                <p>Electronics</p>
+                <img src="https://via.placeholder.com/60" alt="Iphone 12" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">N</span>
+                <span class="title">Nike Schoolbag</span>
+                <p>Clothing</p>
+                <img src="https://via.placeholder.com/60" alt="Nike Bag" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">M</span>
+                <span class="title">Acer Laptop</span>
+                <p>Electronics</p>
+                <img src="https://via.placeholder.com/60" alt="Laptop" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">N</span>
+                <span class="title">Samsung Galaxy A13</span>
+                <p>Electronics</p>
+                <img src="https://via.placeholder.com/60" alt="Samsung Phone" class="item-image right">
+            </li>
+            <li class="collection-item avatar">
+                <span class="avatar">Z</span>
+                Title:<span class="title">Dropy Hoodie</span>
+                Category:<p>Clothing</p>
+                <img src="https://via.placeholder.com/60" alt="Hoodie" class="item-image right">
+            </li>
+        </ul>
+
+    <!-- Mobile Navigation -->
+    <ul class="sidenav" id="mobile-menu">
+        <li><a href="#"><i class="material-icons">account_circle</i> Profile</a></li>
+    </ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+        });
+    </script>
+</body>
+</html>
