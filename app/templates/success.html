@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Added Successfully</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            color: #37474f;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h5 {
+            text-align: center;
+            color: #3f0e40;
+        }
+        .btn {
+            background-color: #3f0e40;
+        }
+        .icon {
+            font-size: 50px;
+            color:#3f0e40;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="center-align">
+            <i class="material-icons icon">check_circle</i>
+            <h5>Item Added Successfully!</h5>
+            <p>Your lost item has been successfully added to our system.</p>
+            <p>We will contact you via email if the item is found.</p>
+            <a href="{{ url_for('home') }}" class="btn waves-effect waves-light">Go to Homepage</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
