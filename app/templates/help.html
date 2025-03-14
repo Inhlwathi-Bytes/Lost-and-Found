@@ -72,13 +72,58 @@
             font-size: 0.8em;
             border-top: 1px solid #ddd;
         }
+         nav {
+            background-color: #3f0e40;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+.logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
-    <div class="top-nav">
-    
-        <a href="/">HOME</a>
-    </div>
+     <nav>
+        <div class="logo-container">
+            <img src="/static/images/The_Durban_University_of_Technology_new_log.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title"></span>
+        </div>
+        <ul>
+            <li><a href="/">HOME</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/help">HELP</a></li>
+        </ul>
+    </nav>
 
     <div class="content">
         <div class="content-inner">
