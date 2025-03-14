@@ -13,8 +13,40 @@
             color: #37474f;
         }
         nav {
-            background-color: #6a1b9a; /* Dark purple */
+            background-color: #3f0e40;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
         .container {
             margin-top: 30px;
             max-width: 600px;
@@ -33,15 +65,17 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav>
-            <a href="#" class="sidenav-trigger" data-target="mobile-menu">
-                <i class="material-icons">menu</i>
-            </a>
-            <a href="#" class="brand-logo">Lost Items</a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="#"><i class="material-icons">account_circle</i></a></li>
-            </ul>
+        <div class="logo-container">
+            <img src="/static/images/The_Durban_University_of_Technology_new_log.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title"></span>
+        </div>
+        <ul>
+            <li><a href="/">HOME</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/help">HELP</a></li>
+        </ul>
     </nav>
 
     <!-- Form Container -->
