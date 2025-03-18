@@ -47,17 +47,19 @@
     <div class="top-nav">
         <a href="/logout">Logout</a>
     </div>
-    <div class="container">
-        <h2>Welcome to Student Dashboard</h2>
-        <h3>Lost Items</h3>
-        <ul>
-            {% for item in items %}
-                <li>{{ item.item_name }} - Found by {{ item.found_by }} on {{ item.found_day }}</li>
-            {% endfor %}
-        </ul>
+    <!-- In student_dashboard.html -->
+<div class="container">
+    <h2>Welcome to Student Dashboard</h2>
+    <h3>Lost Items</h3>
+    <ul>
+        {% for item in items %}
+            <li>{{ item.item_name }} - Found by {{ item.found_by }} on {{ item.found_day }}</li>
+        {% endfor %}
+    </ul>
 
-        <!-- Add Lost Items Button -->
-        <a href="{{ url_for('lost_items_page') }}" class="btn">View All Lost Items</a>
-    </div>
+    <!-- Add Lost Items Button -->
+    <a href="{{ url_for('lost_items_page') }}" class="btn">View All Lost Items</a>
+    <a href="{{ url_for('report_item') }}" class="btn">Report Lost Item</a>
+</div>
 </body>
 </html>

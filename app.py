@@ -67,6 +67,17 @@ class Claim(db.Model):
     status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)   # Foreign key to User
 
+class ReportedItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    item_name = db.Column(db.String(100), nullable=False)
+    photo = db.Column(db.String(200), nullable=True)  # Path to the uploaded photo
+    date_found = db.Column(db.String(50), nullable=False)
+    location_found = db.Column(db.String(100), nullable=False)
+    reported_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User
+    status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
+
+    # Define a relationship to the User model
+    reporter = db.relationship('User', backref='reported_items')
 
 # User loader function for Flask-Login
 @login_manager.user_loader
@@ -76,9 +87,8 @@ def load_user(user_id):
 # Create the database tables
 with app.app_context():
     print("Creating database tables...")
-    db.create_all()
+    db.create_all()  # Create all tables from the models
     print("Database tables created successfully!")
-
 # In-memory storage for lost items
 lost_items = []
 
@@ -313,6 +323,93 @@ def reject_claim(claim_id):
 
     flash('Claim rejected successfully!', 'success')
     return redirect(url_for('view_claims'))
+
+@app.route('/report-item', methods=['GET', 'POST'])
+@login_required
+def report_item():
+    if request.method == 'POST':
+        item_name = request.form.get('item_name')
+        photo = request.files.get('photo')
+        date_found = request.form.get('date_found')
+        location_found = request.form.get('location_found')
+
+        # Save the uploaded photo
+        photo_path = None
+        if photo:
+            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo.filename)
+            photo.save(photo_path)
+
+        # Create a new ReportedItem
+        new_report = ReportedItem(
+            item_name=item_name,
+            photo=photo_path,
+            date_found=date_found,
+            location_found=location_found,
+            reported_by=current_user.id  # Automatically set the user who reported the item
+        )
+        db.session.add(new_report)
+        db.session.commit()
+
+        flash('Item reported successfully!', 'success')
+        return redirect(url_for('student_dashboard'))
+
+    return render_template('report_item.html')
+
+@app.route('/view-reported-items')
+@login_required
+def view_reported_items():
+    if current_user.role != 'admin':
+        flash('You do not have permission to access this page.', 'error')
+        return redirect(url_for('home'))
+
+    # Fetch reported items and include the name of the student who reported each item
+    reported_items = db.session.query(
+        ReportedItem,
+        User.name.label('reporter_name')
+    ).join(User, ReportedItem.reported_by == User.id).all()
+
+    return render_template('view_reported_items.html', reported_items=reported_items)
+
+@app.route('/approve-reported-item/<int:item_id>')
+@login_required
+def approve_reported_item(item_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to perform this action.', 'error')
+        return redirect(url_for('home'))
+
+    reported_item = ReportedItem.query.get_or_404(item_id)
+    reported_item.status = 'approved'
+    db.session.commit()
+
+    # Optionally, you can move the item to the LostItem table here
+    new_lost_item = LostItem(
+        category='Unknown',  # You can modify this as needed
+        item_name=reported_item.item_name,
+        description='Reported by student',  # You can modify this as needed
+        found_day=reported_item.date_found,
+        found_by=User.query.get(reported_item.reported_by).name,
+        campus=reported_item.location_found,
+        photo=reported_item.photo
+    )
+    db.session.add(new_lost_item)
+    db.session.commit()
+
+    flash('Reported item approved and added to lost items!', 'success')
+    return redirect(url_for('view_reported_items'))
+
+@app.route('/reject-reported-item/<int:item_id>')
+@login_required
+def reject_reported_item(item_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to perform this action.', 'error')
+        return redirect(url_for('home'))
+
+    reported_item = ReportedItem.query.get_or_404(item_id)
+    reported_item.status = 'rejected'
+    db.session.commit()
+
+    flash('Reported item rejected!', 'success')
+    return redirect(url_for('view_reported_items'))
 
 if __name__ == "__main__":
     app.run(debug=True) 
