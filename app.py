@@ -1,11 +1,93 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from datetime import datetime
+from flask_migrate import Migrate 
 
 app = Flask(__name__, template_folder="app/templates")
 
-# In-memory storage for lost items and users
-lost_items = []
-users = {}  # Dictionary to store users: {email: {name, surname, student_number, cellphone, password}}
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lost_and_found.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your_secret_key_here'  # Required for session management
 
+# Initialize SQLAlchemy
+db = SQLAlchemy(app)
+
+migrate = Migrate(app, db) 
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # Redirect to login page if user is not authenticated
+
+# Define the User model
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
+    student_number = db.Column(db.String(20), unique=True, nullable=False)
+    cellphone = db.Column(db.String(15), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    role = db.Column(db.String(20), default='student')  # 'admin' or 'student'
+    claims = db.relationship('Claim', backref='student', lazy=True)  # Relationship to Claim
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+
+# Define the LostItem model
+class LostItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(100), nullable=False)
+    item_name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    found_day = db.Column(db.String(50), nullable=False)
+    found_by = db.Column(db.String(100), nullable=False)
+    campus = db.Column(db.String(100), nullable=False)
+    photo = db.Column(db.String(200), nullable=True)  # Path to the uploaded photo
+    claimed = db.Column(db.Boolean, default=False)  # Whether the item has been claimed
+
+
+class Claim(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_name = db.Column(db.String(100), nullable=False)
+    student_number = db.Column(db.String(20), nullable=False)
+    student_email = db.Column(db.String(100), nullable=False)
+    lost_item_id = db.Column(db.Integer, db.ForeignKey('lost_item.id'), nullable=False)
+    id_document = db.Column(db.String(200), nullable=False)  # Path to the uploaded ID document
+    proof_of_registration = db.Column(db.String(200), nullable=False)  # Path to the proof of registration
+    claim_date = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)   # Foreign key to User
+
+
+# User loader function for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Create the database tables
+with app.app_context():
+    print("Creating database tables...")
+    db.create_all()
+    print("Database tables created successfully!")
+
+# In-memory storage for lost items
+lost_items = []
+
+# File upload configuration
+UPLOAD_FOLDER = "static/uploads"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Routes
 @app.route('/')
 def home():
     return render_template('Home.html')
@@ -23,12 +105,16 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        if email in users and users[email]['password'] == password:
-            # Successful login (you'd use sessions or tokens in real app)
-            return redirect(url_for('lost_items_page'))  # Redirect to a logged-in page
-        else:
-            return render_template('login.html', error="Invalid email or password")
+        user = User.query.filter_by(email=email).first()
 
+        if user and user.check_password(password):
+            login_user(user)  # Log in the user
+            if user.role == 'admin':
+                return redirect(url_for('admin_dashboard'))  # Redirect to admin dashboard
+            else:
+                return redirect(url_for('student_dashboard'))  # Redirect to student dashboard
+        else:
+            flash('Invalid email or password', 'error')
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -42,75 +128,191 @@ def register():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm-password')
 
+        # Check if passwords match
         if password != confirm_password:
-            return render_template('register.html', error="Passwords do not match")
+            flash('Passwords do not match', 'error')
+            return render_template('register.html')
 
-        if email in users:
-            return render_template('register.html', error="Email already registered")
+        # Check if email already exists
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered. Please use a different email.', 'error')
+            return render_template('register.html')
 
-        users[email] = {
-            'name': name,
-            'surname': surname,
-            'student_number': student_number,
-            'cellphone': cellphone,
-            'password': password
-        }
-        return redirect(url_for('login'))  # Redirect to login after successful registration
+        # Check if student number already exists
+        if User.query.filter_by(student_number=student_number).first():
+            flash('Student number already registered. Please use a different student number.', 'error')
+            return render_template('register.html')
+
+        # Create new user
+        new_user = User(
+            name=name,
+            surname=surname,
+            student_number=student_number,
+            cellphone=cellphone,
+            email=email,
+            role='student'  # Default role is student
+        )
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Account successfully created!', 'success')
+        return redirect(url_for('student_dashboard'))  # Redirect to student dashboard
 
     return render_template('register.html')
 
 @app.route('/lost-items')
 def lost_items_page():
-    return render_template('items.html', items=lost_items)
+    items = LostItem.query.filter_by(claimed=False).all()  # Fetch only unclaimed items
+    return render_template('items.html', items=items)
 
 @app.route('/add-item', methods=['GET', 'POST'])
+@login_required
 def add_item():
+    if current_user.role != 'admin':
+        flash('You do not have permission to access this page.', 'error')
+        return redirect(url_for('home'))
+
     if request.method == 'POST':
         category = request.form.get('category')
         item_name = request.form.get('item_name')
-        uploaded_date = request.form.get('ploaded_date')
-        description=request.form.get('description')
-        found_day=request.form.get('found_day')
-        found_by=request.form.get('found_by')
-        campus=request.form.get('campus')
+        description = request.form.get('description')
+        found_day = request.form.get('found_day')
+        found_by = request.form.get('found_by')
+        campus = request.form.get('campus')
         photo = request.files.get('photo')
 
-        photo_filename = photo.filename if photo else "No file uploaded"
+        # Save the uploaded photo
+        photo_path = None
+        if photo:
+            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo.filename)
+            photo.save(photo_path)
 
-        new_item = {
-            "category": category,
-            "item_name": item_name,
-            "uploaded_date": uploaded_date,
-            "description": description,
-            "found_day":found_day,
-            "found_by": found_by,
-            "campus":campus,
-            "photo": photo_filename
-        }
+        # Create a new LostItem
+        new_item = LostItem(
+            category=category,
+            item_name=item_name,
+            description=description,
+            found_day=found_day,
+            found_by=found_by,
+            campus=campus,
+            photo=photo_path
+        )
+        db.session.add(new_item)
+        db.session.commit()
 
-        lost_items.append(new_item)
+        flash('Item added successfully!', 'success')
+        return redirect(url_for('lost_items_page'))  # Redirect to the lost items page
 
-        print("New Lost Item:", new_item)
-
-        return redirect(url_for('success'))
-    
     return render_template('addItem.html')
 
-@app.route('/success')
-def success():
-    return render_template('success.html') 
+@app.route('/admin_dashboard')
+@login_required
+def admin_dashboard():
+    if current_user.role != 'admin':
+        flash('You do not have permission to access this page.', 'error')
+        return redirect(url_for('home'))
+    return render_template('admin_dashboard.html', items=lost_items)
+
+@app.route('/student_dashboard')
+@login_required
+def student_dashboard():
+    return render_template('student_dashboard.html', items=lost_items)
+
+@app.route('/claim-item/<int:item_id>', methods=['GET', 'POST'])
+@login_required
+def claim_item(item_id):
+    item = LostItem.query.get_or_404(item_id)
+
+    if request.method == 'POST':
+        student_name = request.form.get('student_name')
+        student_number = request.form.get('student_number')
+        student_email = request.form.get('student_email')
+        id_document = request.files.get('id_document')
+        proof_of_registration = request.files.get('proof_of_registration')
+
+        # Save the uploaded documents
+        id_document_path = os.path.join(app.config['UPLOAD_FOLDER'], id_document.filename)
+        proof_of_registration_path = os.path.join(app.config['UPLOAD_FOLDER'], proof_of_registration.filename)
+        id_document.save(id_document_path)
+        proof_of_registration.save(proof_of_registration_path)
+
+        # Create a new Claim
+        new_claim = Claim(
+            student_name=student_name,
+            student_number=student_number,
+            student_email=student_email,
+            lost_item_id=item.id,
+            id_document=id_document_path,
+            proof_of_registration=proof_of_registration_path,
+            user_id=current_user.id  # Use user_id instead of student_id
+        )
+        db.session.add(new_claim)
+
+        # Mark the item as claimed
+        item.claimed = True
+        db.session.commit()
+
+        flash('Claim submitted successfully!', 'success')
+        return redirect(url_for('student_dashboard'))
+
+    return render_template('claim_item.html', item=item)
+
+@app.route('/view-claims')
+@login_required
+def view_claims():
+    if current_user.role != 'admin':
+        flash('You do not have permission to access this page.', 'error')
+        return redirect(url_for('home'))
+
+    claims = Claim.query.all()
+    return render_template('view_claims.html', claims=claims)
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email')
-        if email in users:
-            # In a real app, send a password reset link to the email.
-            print(f"Password reset requested for {email}")
-            return render_template('passwordRecovery.html', message="Password reset link sent to your email.")
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('Password reset link sent to your email.', 'success')
         else:
-            return render_template('passwordRecovery.html', error="Email not found.")
+            flash('Email not found.', 'error')
     return render_template('passwordRecovery.html')
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('home'))
+
+@app.route('/approve-claim/<int:claim_id>')
+@login_required
+def approve_claim(claim_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to perform this action.', 'error')
+        return redirect(url_for('home'))
+
+    claim = Claim.query.get_or_404(claim_id)
+    claim.status = 'approved'
+    db.session.commit()
+
+    flash('Claim approved successfully!', 'success')
+    return redirect(url_for('view_claims'))
+
+@app.route('/reject-claim/<int:claim_id>')
+@login_required
+def reject_claim(claim_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to perform this action.', 'error')
+        return redirect(url_for('home'))
+
+    claim = Claim.query.get_or_404(claim_id)
+    claim.status = 'rejected'
+    db.session.commit()
+
+    flash('Claim rejected successfully!', 'success')
+    return redirect(url_for('view_claims'))
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 

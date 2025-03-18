@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h4>Claims</h4>
+    <ul class="collection">
+        {% for claim in claims %}
+            <li class="collection-item avatar">
+                <span class="title">{{ claim.student_name }}</span>
+                <p><strong>Student Number:</strong> {{ claim.student_number }}</p>
+                <p><strong>Email:</strong> {{ claim.student_email }}</p>
+                <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+                <p><strong>Status:</strong> {{ claim.status }}</p>
+                <a href="{{ url_for('static', filename=claim.id_document) }}" class="secondary-content">View ID</a>
+                <a href="{{ url_for('static', filename=claim.proof_of_registration) }}" class="secondary-content">View Proof</a>
+                
+                <!-- Approve/Reject Buttons -->
+                {% if claim.status == 'pending' %}
+                    <div class="secondary-content">
+                        <a href="{{ url_for('approve_claim', claim_id=claim.id) }}" class="btn green">Approve</a>
+                        <a href="{{ url_for('reject_claim', claim_id=claim.id) }}" class="btn red">Reject</a>
+                    </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

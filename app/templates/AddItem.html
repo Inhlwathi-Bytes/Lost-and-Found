@@ -14,41 +14,33 @@
         }
         nav {
             background-color: #3f0e40; /* Dark purple */
-        }
-            background-color: #3f0e40;
             color: white;
             padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         nav ul {
             list-style: none;
             display: flex;
             margin: 0;
             padding: 0;
         }
-
         nav ul li {
             margin-left: 20px;
         }
-
         nav ul li a {
             color: white;
             text-decoration: none;
         }
-
         .logo-container {
             display: flex;
             align-items: center;
         }
-
         .logo {
             height: 50px;
             margin-right: 20px;
         }
-
         .container {
             margin-top: 30px;
             max-width: 600px;
@@ -83,7 +75,7 @@
     <!-- Form Container -->
     <div class="container">
         <h5>Add a Lost Item</h5>
-        <form action="#" method="POST" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
+        <form action="/add-item" method="POST" enctype="multipart/form-data">
             <!-- Category -->
             <div class="input-field">
                 <select id="category" name="category">
@@ -102,9 +94,9 @@
                 <label for="item_name">Item Name</label>
             </div>
 
-            <!-- Description of the Item -->
+            <!-- Description -->
             <div class="input-field">
-                <textarea id="description" name="   " class="materialize-textarea" required></textarea>
+                <textarea id="description" name="description" class="materialize-textarea" required></textarea>
                 <label for="description">Description</label>
             </div>
 
@@ -118,7 +110,6 @@
                     <input class="file-path validate" type="text" placeholder="Upload an image">
                 </div>
             </div>
-
 
             <!-- Day the Item was Found -->
             <div class="input-field">
@@ -156,24 +147,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             M.FormSelect.init(document.querySelectorAll('select'));
             M.Datepicker.init(document.querySelectorAll('.datepicker'), { format: 'yyyy-mm-dd' });
-
-            // Simulated form submission for POST
-            window.handleSubmit = function(event) {
-                event.preventDefault();
-                const formData = new FormData(event.target);
-                const entry = {
-                    category: formData.get("category"),
-                    item_name: formData.get("item_name"),
-                    description: formData.get("description"),
-                    collection_date: formData.get("collection_date"),
-                    found_day: formData.get("found_day"),
-                    found_by: formData.get("found_by"),
-                    campus: formData.get("campus"),
-                    photo: formData.get("photo") ? formData.get("photo").name : "No file selected"
-                };
-                console.log("New Lost Item Entry:", entry);
-                alert("Item submitted! Check console for details.");
-            };
         });
     </script>
 </body>

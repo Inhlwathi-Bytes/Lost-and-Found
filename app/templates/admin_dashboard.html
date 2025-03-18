@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f0f2f5;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #3f0e40;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            width: 100%;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3f0e40;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="/add-item">Add New Item</a></li>
+            <li><a href="/lost-items">Lost Items</a></li>
+            <li><a href="/view-claims">View Claims</a></li> <!-- Added View Claims Link -->
+            <li><a href="#">Reported Lost Items</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Call Center</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <div class="top-nav">
+            <input type="text" class="search-bar" placeholder="Search Lost Items...">
+            <div class="user-icon">AW</div> <!-- Example initials -->
+        </div>
+        
+        <div class="container">
+            <h2>Welcome to Admin Dashboard</h2>
+            <p>Manage lost and found items efficiently.</p>
+        </div>
+    </div>
+</body>
+</html>

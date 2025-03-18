@@ -6,22 +6,34 @@
     <title>DUT Lost and Found</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #f8f8f8;
+            background: radial-gradient(circle at center, #3f0e40, #1a1a2e);
+            color: white;
+            text-align: center;
+            overflow: hidden;
         }
 
         nav {
-            background-color: #3f0e40;
-            color: white;
-            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 20px;
+            background: transparent;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-grow: 1;
         }
 
         nav ul {
@@ -32,113 +44,122 @@
         }
 
         nav ul li {
-            margin-left: 20px;
+            margin: 0 20px;
         }
 
         nav ul li a {
             color: white;
             text-decoration: none;
+            font-size: 1.1em;
+            transition: opacity 0.3s;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
+        nav ul li a:hover {
+            opacity: 0.7;
         }
 
-        .logo {
-            height: 50px;
-            margin-right: 20px;
+        .dut-badge {
+            height: 80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            margin: 0;
+             padding: 0;
         }
 
-        .nav-title {
-            font-size: 1.2em;
+        .sign-up {
+            background: white;
+            color: #3f0e40;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1em;
+            text-decoration: none;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 20px;
         }
 
         .content {
-            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 100px 20px;
-            text-align: left;
-        }
-
-        .content-inner {
-            max-width: 800px;
-            text-align: center;
+            height: 100vh;
+            flex-direction: column;
         }
 
         .title {
-            font-size: 3em;
-            margin-bottom: 20px;
-            color: #3f0e40;
-            text-align: center;
+            font-size: 3.5em;
+            font-weight: bold;
         }
 
         .description {
-            font-size: 1.2em;
+            font-size: 1.3em;
+            max-width: 700px;
             line-height: 1.8;
-            margin-bottom: 40px;
-            text-align: center;
+            margin: 20px auto;
         }
 
         .buttons {
+            margin-top: 30px;
             display: flex;
-            justify-content: center;
             gap: 20px;
         }
 
         .button {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 15px 35px;
+            border-radius: 30px;
             font-size: 1.1em;
             text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
         }
 
         .button-primary {
-            background-color: transparent;
-            border: 2px solid #3f0e40;
+            background: white;
             color: #3f0e40;
         }
 
+        .button-primary:hover {
+            background: #ddd;
+        }
+
         .button-secondary {
-            background-color: #3f0e40;
+            background: #e94560;
             color: white;
         }
 
+        .button-secondary:hover {
+            background: #d63447;
+        }
+
         footer {
-            background-color: #f4f4f4;
-            color: #555;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 0.8em;
-            border-top: 1px solid #ddd;
+            padding: 20px;
+            background: transparent;
+            font-size: 0.9em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
 <body>
     <nav>
-        <div class="logo-container">
-            <img src="/static/images/The_Durban_University_of_Technology_new_log.jpg" alt="DUT Logo" class="logo">
-            <span class="nav-title"></span>
+        <img src="/static/images/DUT.jpg" alt="DUT " class="dut-badge">
+        <div class="nav-links">
+            <ul>
+                <li><a href="/help">HELP</a></li>
+                <li><a href="/lost-items">LOST ITEMS</a></li>
+                <li><a href="/about">ABOUT</a></li>
+            </ul>
         </div>
-        <ul>
-            <li><a href="/">HOME</a></li>
-            <li><a href="/about">ABOUT</a></li>
-            <li><a href="/lost-items">LOST ITEMS</a></li>
-            <li><a href="/help">HELP</a></li>
-        </ul>
+        <a href="/register" class="sign-up">SIGN UP →</a>
     </nav>
     <div class="content">
-        <div class="content-inner">
-            <h1 class="title">Welcome to DUT Lost & Found</h1>
-            <p class="description">Our mission is to efficiently reunite lost items with their owners. We provide a secure and user-friendly platform to report and search for lost belongings. Join our community to ensure that no item is lost forever.</p>
-            <div class="buttons">
-                <a href="/login" class="button button-primary">SIGN IN</a>
-                <a href="/register" class="button button-secondary">SIGN UP</a>
-            </div>
+        <h1 class="title">Welcome to DUT Lost & Found</h1>
+        <p class="description">Our mission is to efficiently reunite lost items with their owners. We provide a secure and user-friendly platform to report and search for lost belongings. Join our community to ensure that no item is lost forever.</p>
+        <div class="buttons">
+            <a href="/login" class="button button-primary">SIGN IN →</a>
         </div>
     </div>
     <footer>
