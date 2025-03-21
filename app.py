@@ -5,6 +5,7 @@ import os
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from datetime import datetime
 from flask_migrate import Migrate 
+import re
 
 app = Flask(__name__, template_folder="app/templates")
 
@@ -151,6 +152,21 @@ def register():
         # Check if student number already exists
         if User.query.filter_by(student_number=student_number).first():
             flash('Student number already registered. Please use a different student number.', 'error')
+            return render_template('register.html')
+        
+
+       # Validate student number
+        if not re.match(r'^\d{8}$', student_number):
+            flash('Student number must be 8 digits', 'error')
+            return render_template('register.html')
+
+        # Validate email format
+        if not re.match(r'^\d{8}@dut4life\.ac\.za$', email):
+            flash('Email must be in the format: 8digits@dut4life.ac.za', 'error')
+            return render_template('register.html')
+        #Validate email digits match student number
+        if student_number != email[:8]:
+            flash('Email digits must match student number digits', 'error')
             return render_template('register.html')
 
         # Create new user
