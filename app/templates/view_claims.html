@@ -14,7 +14,6 @@
                 <a href="{{ url_for('static', filename=claim.id_document) }}" class="secondary-content">View ID</a>
                 <a href="{{ url_for('static', filename=claim.proof_of_registration) }}" class="secondary-content">View Proof</a>
                 
-                <!-- Approve/Reject Buttons -->
                 {% if claim.status == 'pending' %}
                     <div class="secondary-content">
                         <a href="{{ url_for('approve_claim', claim_id=claim.id) }}" class="btn green">Approve</a>

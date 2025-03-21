@@ -104,7 +104,7 @@
                     <p><strong>Campus:</strong> {{ item.campus }}</p>
                 </div>
                 {% if user_role == 'student' %}
-                    <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Claim Item</a>
+                <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Claim Item</a>
                 {% endif %}
             </div>
             {% endfor %}

@@ -437,5 +437,50 @@ def reject_reported_item(item_id):
     flash('Reported item rejected!', 'success')
     return redirect(url_for('view_reported_items'))
 
+@app.route('/search')
+@login_required
+def search():
+    query = request.args.get('query', '').strip()  # Get the search query from the URL parameters
+    if not query:
+        return redirect(url_for('admin_dashboard'))  # Redirect if the query is empty
+
+    # Search across Lost Items, Claims, and Reported Items
+    lost_items = LostItem.query.filter(
+        (LostItem.item_name.ilike(f'%{query}%')) |
+        (LostItem.description.ilike(f'%{query}%')) |
+        (LostItem.category.ilike(f'%{query}%'))
+    ).all()
+
+    claims = Claim.query.filter(
+        (Claim.student_name.ilike(f'%{query}%')) |
+        (Claim.student_number.ilike(f'%{query}%')) |
+        (Claim.student_email.ilike(f'%{query}%'))
+    ).all()
+
+    reported_items = ReportedItem.query.filter(
+        (ReportedItem.item_name.ilike(f'%{query}%')) |
+        (ReportedItem.location_found.ilike(f'%{query}%'))
+    ).all()
+
+    return render_template('search_results.html', query=query, lost_items=lost_items, claims=claims, reported_items=reported_items)
+
+@app.route('/lost-item/<int:item_id>')
+@login_required
+def view_lost_item(item_id):
+    item = LostItem.query.get_or_404(item_id)
+    return render_template('view_lost_item.html', item=item)
+
+@app.route('/claim/<int:claim_id>')
+@login_required
+def view_claim(claim_id):
+    claim = Claim.query.get_or_404(claim_id)
+    return render_template('view_claim.html', claim=claim)
+
+@app.route('/reported-item/<int:item_id>')
+@login_required
+def view_reported_item(item_id):
+    reported_item = ReportedItem.query.get_or_404(item_id)
+    return render_template('view_reported_item.html', reported_item=reported_item)
+
 if __name__ == "__main__":
     app.run(debug=True) 
