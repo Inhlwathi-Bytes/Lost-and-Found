@@ -38,7 +38,7 @@
         .main-content {
             margin-left: 260px;
             padding: 20px;
-            width: 100%;
+            width: calc(100% - 260px);
         }
         .top-nav {
             display: flex;
@@ -66,13 +66,14 @@
             font-size: 18px;
             font-weight: bold;
         }
-        .container {
+        .content-container {
             background: white;
             padding: 20px;
             margin-top: 20px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
+        /* Add styles for other content as needed */
     </style>
 </head>
 <body>
@@ -81,25 +82,37 @@
         <ul>
             <li><a href="/add-item">Add New Item</a></li>
             <li><a href="/lost-items">Lost Items</a></li>
-            <li><a href="/view-claims">View Claims</a></li> <!-- Added View Claims Link -->
-            <li><a href="/view-reported-items">View Reported Items</a></li> <!-- Added View Reported-->
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Call Center</a></li>
-            <li><a href="#">Help</a></li>
+            <li><a href="/view-claims">View Claims</a></li>
+            <li><a href="/view-reported-items">View Reported Items</a></li>
+            <li><a href="/help">Help</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </div>
-    
+
     <div class="main-content">
         <div class="top-nav">
             <input type="text" class="search-bar" placeholder="Search Lost Items...">
-            <div class="user-icon">AW</div> <!-- Example initials -->
+            <div class="user-icon">AW</div>
         </div>
-        
-        <div class="container">
-            <h2>Welcome to Admin Dashboard</h2>
-            <p>Manage lost and found items efficiently.</p>
+
+        <div class="content-container">
+            {% if active_page == 'add-item' %}
+                {% include 'add_item.html' %}
+            {% elif active_page == 'lost-items' %}
+                {% include 'lost_items.html' %}
+            {% elif active_page == 'view-claims' %}
+                {% include 'view_claims.html' %}
+            {% elif active_page == 'view-reported-items' %}
+                {% include 'view_reported_items.html' %}
+            {% else %}
+                <h2>Welcome to the Admin Dashboard</h2>
+                <p>Select an option from the sidebar.</p>
+            {% endif %}
         </div>
     </div>
+
+    <script>
+        // Placeholder for any JavaScript functionality
+    </script>
 </body>
 </html>

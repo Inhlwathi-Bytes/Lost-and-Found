@@ -172,9 +172,13 @@ def register():
     return render_template('register.html')
 
 @app.route('/lost-items')
+@login_required
 def lost_items_page():
-    items = LostItem.query.filter_by(claimed=False).all()  # Fetch only unclaimed items
-    return render_template('items.html', items=items)
+    items = LostItem.query.filter_by(claimed=False).all()
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_template('lost_items.html', items=items, user_role=current_user.role)
+    else:
+        return render_template('admin_dashboard.html', active_page='lost-items', items=items, user_role=current_user.role)
 
 @app.route('/add-item', methods=['GET', 'POST'])
 @login_required
@@ -212,9 +216,12 @@ def add_item():
         db.session.commit()
 
         flash('Item added successfully!', 'success')
-        return redirect(url_for('lost_items_page'))  # Redirect to the lost items page
+        return redirect(url_for('lost_items_page'))
 
-    return render_template('addItem.html')
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_template('add_item.html')
+    else:
+        return render_template('admin_dashboard.html', active_page='add-item')
 
 @app.route('/admin_dashboard')
 @login_required
@@ -222,7 +229,16 @@ def admin_dashboard():
     if current_user.role != 'admin':
         flash('You do not have permission to access this page.', 'error')
         return redirect(url_for('home'))
-    return render_template('admin_dashboard.html', items=lost_items)
+
+    # Fetch data for the dashboard
+    items = LostItem.query.filter_by(claimed=False).all()
+    claims = Claim.query.all()
+    reported_items = db.session.query(
+        ReportedItem,
+        User.name.label('reporter_name')
+    ).join(User, ReportedItem.reported_by == User.id).all()
+
+    return render_template('admin_dashboard.html', items=items, claims=claims, reported_items=reported_items)
 
 @app.route('/student_dashboard')
 @login_required
@@ -233,6 +249,10 @@ def student_dashboard():
 @login_required
 def claim_item(item_id):
     item = LostItem.query.get_or_404(item_id)
+
+    if current_user.role != 'student':
+        flash('Only students can claim items.', 'error')
+        return redirect(url_for('lost_items_page'))
 
     if request.method == 'POST':
         student_name = request.form.get('student_name')
@@ -276,8 +296,11 @@ def view_claims():
         return redirect(url_for('home'))
 
     claims = Claim.query.all()
-    return render_template('view_claims.html', claims=claims)
-
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_template('view_claims.html', claims=claims)
+    else:
+        return render_template('admin_dashboard.html', active_page='view-claims', claims=claims)
+    
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -362,13 +385,16 @@ def view_reported_items():
         flash('You do not have permission to access this page.', 'error')
         return redirect(url_for('home'))
 
-    # Fetch reported items and include the name of the student who reported each item
     reported_items = db.session.query(
         ReportedItem,
         User.name.label('reporter_name')
     ).join(User, ReportedItem.reported_by == User.id).all()
 
-    return render_template('view_reported_items.html', reported_items=reported_items)
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render_template('view_reported_items.html', reported_items=reported_items)
+    else:
+        return render_template('admin_dashboard.html', active_page='view-reported-items', reported_items=reported_items)
+
 
 @app.route('/approve-reported-item/<int:item_id>')
 @login_required
