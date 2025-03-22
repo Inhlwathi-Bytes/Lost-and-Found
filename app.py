@@ -354,10 +354,17 @@ def reject_claim(claim_id):
         return redirect(url_for('home'))
 
     claim = Claim.query.get_or_404(claim_id)
+    lost_item = LostItem.query.get_or_404(claim.lost_item_id)
+
+    # Update the claim status to 'rejected'
     claim.status = 'rejected'
+
+    # Set the lost item's claimed status back to False
+    lost_item.claimed = False
+
     db.session.commit()
 
-    flash('Claim rejected successfully!', 'success')
+    flash('Claim rejected successfully! The item has been returned to the lost items list.', 'success')
     return redirect(url_for('view_claims'))
 
 @app.route('/report-item', methods=['GET', 'POST'])
