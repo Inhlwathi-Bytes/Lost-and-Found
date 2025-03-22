@@ -30,15 +30,46 @@
         .btn:hover {
             background-color: #5e2c60;
         }
+        .claim-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .claim-item.approved {
+            border-left: 5px solid #28a745;
+        }
+        .claim-item.rejected {
+            border-left: 5px solid #dc3545;
+        }
+        .claim-item.pending {
+            border-left: 5px solid #ffc107;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>My Claims</h2>
         <ul>
-            {% for claim in claims %}
-                <li>
-                    {{ claim.student_name }} - {{ claim.student_number }} - {{ claim.status }}
+            {% for detail in claim_details %}
+                <li class="claim-item {{ detail.claim.status }}">
+                    <strong>Student Name:</strong> {{ detail.claim.student_name }}<br>
+                    <strong>Student Number:</strong> {{ detail.claim.student_number }}<br>
+                    <strong>Status:</strong> {{ detail.claim.status }}<br>
+                    {% if detail.claim.status == 'approved' %}
+                        <p style="color: #28a745;">
+                            Approved. Come fetch your item at Lost & Found Office in <strong>{{ detail.campus }}</strong>.
+                        </p>
+                    {% elif detail.claim.status == 'rejected' %}
+                        <p style="color: #dc3545;">
+                            Rejected. Please contact the Lost & Found Office for more details.
+                        </p>
+                    {% else %}
+                        <p style="color: #ffc107;">
+                            Pending. Your claim is under review.
+                        </p>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

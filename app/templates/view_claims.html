@@ -20,6 +20,9 @@
                         <a href="{{ url_for('reject_claim', claim_id=claim.id) }}" class="btn red">Reject</a>
                     </div>
                 {% endif %}
+                {% if claim.status == 'rejected' %}
+                        <p><strong>Note:</strong> This item has been returned to the lost items list.</p>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

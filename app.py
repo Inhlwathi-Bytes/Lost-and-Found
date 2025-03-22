@@ -509,8 +509,20 @@ def view_my_claims():
         flash('You do not have permission to access this page.', 'error')
         return redirect(url_for('home'))
 
+    # Fetch claims for the current user
     claims = Claim.query.filter_by(user_id=current_user.id).all()
-    return render_template('my_claims.html', claims=claims)
+
+    # Create a list to store claim details along with campus information
+    claim_details = []
+    for claim in claims:
+        lost_item = LostItem.query.get(claim.lost_item_id)
+        campus = lost_item.campus if lost_item else "Unknown Campus"
+        claim_details.append({
+            'claim': claim,
+            'campus': campus
+        })
+
+    return render_template('my_claims.html', claim_details=claim_details)
 
 if __name__ == "__main__":
     app.run(debug=True) 
