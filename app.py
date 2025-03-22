@@ -256,7 +256,26 @@ def admin_dashboard():
 @app.route('/student_dashboard')
 @login_required
 def student_dashboard():
-    return render_template('student_dashboard.html', items=lost_items)
+    # Fetch unclaimed items for the dashboard
+    items = LostItem.query.filter_by(claimed=False).all()
+
+    # Fetch claims for the current user (for My Claims section)
+    claims = Claim.query.filter_by(user_id=current_user.id).order_by(Claim.claim_date.desc()).all()
+    claim_details = []
+    for claim in claims:
+        lost_item = LostItem.query.get(claim.lost_item_id)
+        campus = lost_item.campus if lost_item else "Unknown Campus"
+        claim_details.append({
+            'claim': claim,
+            'campus': campus
+        })
+
+    # Render the template with all necessary data
+    return render_template(
+        'student_dashboard.html',
+        items=items,
+        claim_details=claim_details
+    )
 
 @app.route('/claim-item/<int:item_id>', methods=['GET', 'POST'])
 @login_required
@@ -509,8 +528,8 @@ def view_my_claims():
         flash('You do not have permission to access this page.', 'error')
         return redirect(url_for('home'))
 
-    # Fetch claims for the current user
-    claims = Claim.query.filter_by(user_id=current_user.id).all()
+    # Fetch claims for the current user, sorted by claim_date in descending order
+    claims = Claim.query.filter_by(user_id=current_user.id).order_by(Claim.claim_date.desc()).all()
 
     # Create a list to store claim details along with campus information
     claim_details = []
