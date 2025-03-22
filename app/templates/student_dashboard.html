@@ -63,14 +63,43 @@
             text-align: center;
         }
 
+        /* Search Box */
+        .search-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-box input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #c2a763; /* Gold button */
+            color: #000; /* Black text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .search-box button:hover {
+            background-color: #b29752; /* Darker gold on hover */
+        }
+
         /* Lost Items Grid */
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(10cm, 1fr)); /* 10cm width */
+            gap: 2cm; /* 2cm gap between items */
             margin-top: 20px;
         }
 
+        /* Item Card */
         .item-card {
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -79,6 +108,9 @@
             color: #000; /* Black text */
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
+            width: 10cm; /* 10cm width */
+            height: 17cm; /* 17cm height */
+            box-sizing: border-box; /* Ensure padding is included in the size */
         }
 
         .item-card:hover {
@@ -150,6 +182,11 @@
         <!-- Dashboard Content -->
         <div id="dashboard" class="content-section active">
             <h3>Lost Items</h3>
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for items...">
+                <button onclick="searchItems()">Search</button>
+            </div>
             <div class="items-grid">
                 {% for item in items %}
                     <div class="item-card">
@@ -173,6 +210,11 @@
         <!-- View All Lost Items Content -->
         <div id="lost_items" class="content-section">
             <h3>All Lost Items</h3>
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInputAll" placeholder="Search for items...">
+                <button onclick="searchItemsAll()">Search</button>
+            </div>
             <div class="items-grid">
                 {% for item in items %}
                     <div class="item-card">
@@ -266,7 +308,7 @@
         </div>
     </div>
 
-    <!-- JavaScript for Dynamic Content Switching -->
+    <!-- JavaScript for Dynamic Content Switching and Search Functionality -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const navButtons = document.querySelectorAll('.nav-bar .btn[data-page]');
@@ -295,6 +337,58 @@
             // Show the default page (Dashboard) on initial load
             showPage('dashboard');
         });
+
+        // Search Functionality for Dashboard
+        function searchItems() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('#dashboard .item-card');
+
+            items.forEach(item => {
+                const itemName = item.querySelector('h3').textContent.toLowerCase();
+                const itemDescription = item.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
+                const itemCampus = item.querySelector('p:nth-of-type(2)').textContent.toLowerCase();
+                const itemFoundBy = item.querySelector('p:nth-of-type(3)').textContent.toLowerCase();
+                const itemFoundOn = item.querySelector('p:nth-of-type(4)').textContent.toLowerCase();
+
+                if (
+                    itemName.includes(searchTerm) ||
+                    itemDescription.includes(searchTerm) ||
+                    itemCampus.includes(searchTerm) ||
+                    itemFoundBy.includes(searchTerm) ||
+                    itemFoundOn.includes(searchTerm)
+                ) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Search Functionality for All Lost Items
+        function searchItemsAll() {
+            const searchTerm = document.getElementById('searchInputAll').value.toLowerCase();
+            const items = document.querySelectorAll('#lost_items .item-card');
+
+            items.forEach(item => {
+                const itemName = item.querySelector('h3').textContent.toLowerCase();
+                const itemDescription = item.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
+                const itemCampus = item.querySelector('p:nth-of-type(2)').textContent.toLowerCase();
+                const itemFoundBy = item.querySelector('p:nth-of-type(3)').textContent.toLowerCase();
+                const itemFoundOn = item.querySelector('p:nth-of-type(4)').textContent.toLowerCase();
+
+                if (
+                    itemName.includes(searchTerm) ||
+                    itemDescription.includes(searchTerm) ||
+                    itemCampus.includes(searchTerm) ||
+                    itemFoundBy.includes(searchTerm) ||
+                    itemFoundOn.includes(searchTerm)
+                ) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
     </script>
 </body>
 </html>
