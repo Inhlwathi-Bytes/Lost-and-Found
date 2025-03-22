@@ -6,6 +6,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from datetime import datetime
 from flask_migrate import Migrate 
 import re
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__, template_folder="app/templates")
 
@@ -212,8 +213,10 @@ def add_item():
         # Save the uploaded photo
         photo_path = None
         if photo:
-            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo.filename)
+            photo_filename = secure_filename(photo.filename)  # Use secure_filename to avoid issues
+            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
             photo.save(photo_path)
+            photo_path = f"uploads/{photo_filename}"  # Store the relative path
 
         # Create a new LostItem
         new_item = LostItem(
@@ -231,10 +234,7 @@ def add_item():
         flash('Item added successfully!', 'success')
         return redirect(url_for('lost_items_page'))
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return render_template('add_item.html')
-    else:
-        return render_template('admin_dashboard.html', active_page='add-item')
+    return render_template('add_item.html')
 
 @app.route('/admin_dashboard')
 @login_required

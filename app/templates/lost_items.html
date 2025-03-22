@@ -13,12 +13,20 @@
         }
 
         .container {
-            width: 80%;
+            width: 90%;
+            max-width: 1200px;
             margin: 20px auto;
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h4 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
         }
 
         .item-grid {
@@ -44,7 +52,8 @@
 
         .item-image {
             max-width: 100%;
-            height: auto;
+            height: 200px;
+            object-fit: cover;
             border-radius: 5px;
             margin-bottom: 10px;
         }
@@ -55,21 +64,12 @@
 
         .item-details p {
             margin: 5px 0;
+            font-size: 14px;
+            color: #555;
         }
 
-        .claim-button {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #3f0e40;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-
-        .claim-button:hover {
-            background-color: #2c092d;
+        .item-details p strong {
+            color: #333;
         }
 
         .avatar {
@@ -85,10 +85,20 @@
             margin-bottom: 10px;
         }
 
-        h4 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
+        .claim-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #3f0e40;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .claim-button:hover {
+            background-color: #2c092d;
         }
     </style>
 </head>
@@ -99,9 +109,10 @@
             {% for item in items %}
             <div class="item-card">
                 {% if item.photo %}
-                <img src="{{ url_for('static', filename='uploads/' + item.photo) }}" alt="{{ item.item_name }}" class="item-image">
-                {% endif %}
+                <img src="{{ url_for('static', filename=item.photo) }}" alt="{{ item.item_name }}" class="item-image">
+                {% else %}
                 <div class="avatar">{{ item.category[0] if item.category else '?' }}</div>
+                {% endif %}
                 <div class="item-details">
                     <p><strong>Item:</strong> {{ item.item_name }}</p>
                     <p>{{ item.description }}</p>
