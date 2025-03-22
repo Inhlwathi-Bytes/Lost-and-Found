@@ -34,6 +34,12 @@
             text-align: center;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .item-image {
@@ -93,9 +99,9 @@
             {% for item in items %}
             <div class="item-card">
                 {% if item.photo %}
-                <img src="{{ url_for('static', filename=item.photo) }}" alt="{{ item.item_name }}" class="item-image">
+                <img src="{{ url_for('static', filename='uploads/' + item.photo) }}" alt="{{ item.item_name }}" class="item-image">
                 {% endif %}
-                <div class="avatar">{{ item.category[0] }}</div>
+                <div class="avatar">{{ item.category[0] if item.category else '?' }}</div>
                 <div class="item-details">
                     <p><strong>Item:</strong> {{ item.item_name }}</p>
                     <p>{{ item.description }}</p>

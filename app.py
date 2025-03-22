@@ -190,11 +190,8 @@ def register():
 @app.route('/lost-items')
 @login_required
 def lost_items_page():
-    items = LostItem.query.filter_by(claimed=False).all()
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return render_template('lost_items.html', items=items, user_role=current_user.role)
-    else:
-        return render_template('admin_dashboard.html', active_page='lost-items', items=items, user_role=current_user.role)
+    items = LostItem.query.filter_by(claimed=False).all()  # Fetch unclaimed items
+    return render_template('lost_items.html', items=items, user_role=current_user.role)
 
 @app.route('/add-item', methods=['GET', 'POST'])
 @login_required
@@ -497,6 +494,16 @@ def view_claim(claim_id):
 def view_reported_item(item_id):
     reported_item = ReportedItem.query.get_or_404(item_id)
     return render_template('view_reported_item.html', reported_item=reported_item)
+
+@app.route('/my-claims')
+@login_required
+def view_my_claims():
+    if current_user.role != 'student':
+        flash('You do not have permission to access this page.', 'error')
+        return redirect(url_for('home'))
+
+    claims = Claim.query.filter_by(user_id=current_user.id).all()
+    return render_template('my_claims.html', claims=claims)
 
 if __name__ == "__main__":
     app.run(debug=True) 

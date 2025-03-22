@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>My Claims</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,35 +26,23 @@
             text-decoration: none;
             border-radius: 5px;
             margin-top: 20px;
-            margin-right: 10px;
         }
         .btn:hover {
             background-color: #5e2c60;
-        }
-        .button-container {
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Welcome to Student Dashboard</h2>
-        <h3>Lost Items</h3>
+        <h2>My Claims</h2>
         <ul>
-            {% for item in items %}
-                <li>{{ item.item_name }} - Found by {{ item.found_by }} on {{ item.found_day }}</li>
+            {% for claim in claims %}
+                <li>
+                    {{ claim.student_name }} - {{ claim.student_number }} - {{ claim.status }}
+                </li>
             {% endfor %}
         </ul>
-
-        <!-- Add Lost Items Button -->
-        <div class="button-container">
-            <a href="{{ url_for('lost_items_page') }}" class="btn">View All Lost Items</a>
-            <a href="{{ url_for('report_item') }}" class="btn">Report Lost Item</a>
-            <a href="{{ url_for('view_my_claims') }}" class="btn">My Claims</a>
-            <a href="{{ url_for('help_page') }}" class="btn">Help</a>
-            <a href="{{ url_for('about') }}" class="btn">About</a>
-            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-        </div>
+        <a href="{{ url_for('student_dashboard') }}" class="btn">Back to Dashboard</a>
     </div>
 </body>
 </html>
