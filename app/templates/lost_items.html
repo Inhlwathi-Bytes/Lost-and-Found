@@ -12,6 +12,45 @@
             background-color: #f0f2f5;
         }
 
+        nav {
+            background-color: #c2a763;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
+
         .container {
             width: 90%;
             max-width: 1200px;
@@ -24,25 +63,28 @@
 
         h4 {
             text-align: center;
-            margin-bottom: 20px;
             color: #333;
             font-size: 24px;
         }
 
         .item-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 20px;
         }
 
         .item-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 15px;
-            text-align: center;
+            padding-right: 10px;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+            min-height: 120px;
         }
 
         .item-card:hover {
@@ -51,38 +93,38 @@
         }
 
         .item-image {
-            max-width: 100%;
-            height: 200px;
+            max-width: 120px;
+            height: 120px;
             object-fit: cover;
             border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        .item-details {
-            text-align: left;
-        }
-
-        .item-details p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .item-details p strong {
-            color: #333;
+            margin-right: 20px;
         }
 
         .avatar {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background-color: #3f0e40;
             color: white;
             font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-right: 20px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
         }
 
         .claim-button {
@@ -92,9 +134,9 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            margin-top: 10px;
             transition: background-color 0.3s;
             font-size: 14px;
+            width: max-content;
         }
 
         .claim-button:hover {
@@ -103,8 +145,20 @@
     </style>
 </head>
 <body>
+    <nav>
+        <div class="logo-container">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title"></span>
+        </div>
+        <ul>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/help">HELP</a></li>
+            <li><a  href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
-        <h4>Lost Items</h4>
         <div class="item-grid">
             {% for item in items %}
             <div class="item-card">

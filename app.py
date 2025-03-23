@@ -14,7 +14,7 @@ from datetime import datetime, timedelta  # For handling token expiration
 app = Flask(__name__, template_folder="app/templates")
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lost_and_found.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:Revolution00/12/20@localhost:3306/lostandfound"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Required for session management
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use your email provider's SMTP server
@@ -103,8 +103,21 @@ class ReportedItem(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# admin_user = User(
+#     name="Admin",
+#     surname="User",
+#     student_number="00000000",
+#     cellphone="0123456789",
+#     email="admin@example.com",
+#     password_hash=generate_password_hash("AdminPass123"),  # Hash password
+#     role="admin"
+# )
+
 # Create the database tables
 with app.app_context():
+    # db.session.add(admin_user)
+    # db.session.commit()
+    print("✅ Admin user created successfully!")
     print("Creating database tables...")
     db.create_all()  # Create all tables from the models
     print("Database tables created successfully!")
@@ -141,7 +154,7 @@ def login():
             if user.role == 'admin':
                 return redirect(url_for('admin_dashboard'))  # Redirect to admin dashboard
             else:
-                return redirect(url_for('student_dashboard'))  # Redirect to student dashboard
+                return redirect(url_for('lostitems'))  # Redirect to student dashboard
         else:
             flash('Invalid email or password', 'error')
     return render_template('login.html')
@@ -207,7 +220,7 @@ def register():
 
 @app.route('/lost-items')
 @login_required
-def lost_items_page():
+def lostitems():
     items = LostItem.query.filter_by(claimed=False).all()  # Fetch unclaimed items
     return render_template('lost_items.html', items=items, user_role=current_user.role)
 
