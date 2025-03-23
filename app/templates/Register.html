@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -16,51 +18,19 @@
             color: #c2a763;
         }
 
-        /* Top Navigation */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #232323;
-            color: #c2a763;
-            padding: 10px 20px;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .dut-badge {
-            height: 50px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            color: #c2a763;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 16px;
-        }
-
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-
+        /* Home Icon */
         .home-icon {
-            font-size: 30px;
+            position: fixed; /* Changed from absolute to fixed */
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
             color: #c2a763;
             text-decoration: none;
+            z-index: 1000; /* Ensure it stays on top of other content */
         }
 
         .home-icon:hover {
-            text-decoration: none;
+            color: #b39555;
         }
 
         /* Main Content */
@@ -69,7 +39,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 80px; /* Adjust for fixed top nav */
+            padding-top: 80px; /* Adjust for home icon */
         }
 
         .signup-card {
@@ -182,16 +152,10 @@
     </style>
 </head>
 <body>
-    <div class="top-nav">
-        <img src="/static/images/DUT.jpg" alt="DUT Badge" class="dut-badge">
-
-        <div class="nav-links">
-            <a href="/about">📖 ABOUT</a>
-            <a href="/help">❓ HELP</a>
-        </div>
-
-        <a href="/" class="home-icon">🏠</a>
-    </div>
+    <!-- Home Icon -->
+    <a href="{{ url_for('home') }}" class="home-icon">
+        <i class="fas fa-home"></i>
+    </a>
 
     <div class="signup-container">
         <div class="signup-card">
