@@ -6,143 +6,158 @@
     <title>DUT Lost and Found</title>
     <style>
         body {
-            font-family: sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f8f8;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a1a;
+            color: #c2a763;
         }
 
-        nav {
-            background-color: #3f0e40;
-            color: white;
-            padding: 20px;
+        .container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex: 1;
+            width: 100%;
         }
 
-        nav ul {
-            list-style: none;
+        .left-section {
+            width: 50%;
+            background-color: #232323;
             display: flex;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            height: 50px;
-            margin-right: 20px;
-        }
-
-        .nav-title {
-            font-size: 1.2em;
-        }
-
-        .content {
-            flex-grow: 1;
-            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 100px 20px;
             text-align: left;
+            padding: 50px;
+            position: relative;
         }
 
-        .content-inner {
-            max-width: 800px;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 3em;
+        .left-section h1 {
+            font-size: 3.5em;
+            font-weight: bold;
             margin-bottom: 20px;
-            color: #3f0e40;
-            text-align: center;
-        }
-
-        .description {
-            font-size: 1.2em;
-            line-height: 1.8;
-            margin-bottom: 40px;
-            text-align: center;
         }
 
         .buttons {
+            margin-top: 30px;
             display: flex;
-            justify-content: center;
             gap: 20px;
         }
 
         .button {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 15px 35px;
+            border-radius: 30px;
             font-size: 1.1em;
             text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
         }
 
         .button-primary {
-            background-color: transparent;
-            border: 2px solid #3f0e40;
-            color: #3f0e40;
+            background: transparent;
+            border: 2px solid #c2a763;
+            color: #c2a763;
+        }
+
+        .button-primary:hover {
+            background: #c2a763;
+            color: #232323;
         }
 
         .button-secondary {
-            background-color: #3f0e40;
+            background: #c2a763;
+            color: #232323;
+        }
+
+        .button-secondary:hover {
+            background: #b39555;
+        }
+
+        .right-section {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .right-section img {
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+        }
+
+        .dut-logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-buttons a {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1em;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid black;
+            color: black;
+            transition: all 0.3s;
+        }
+
+        .nav-buttons a:hover {
+            background: black;
             color: white;
         }
 
-        footer {
-            background-color: #f4f4f4;
-            color: #555;
+        .footer {
+            background: #232323;
+            color: #c2a763;
             text-align: center;
-            padding: 10px 0;
-            font-size: 0.8em;
-            border-top: 1px solid #ddd;
+            padding: 15px;
+            font-size: 0.9em;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo-container">
-            <img src="/static/images/The_Durban_University_of_Technology_new_log.jpg" alt="DUT Logo" class="logo">
-            <span class="nav-title"></span>
-        </div>
-        <ul>
-            <li><a href="/">HOME</a></li>
-            <li><a href="/about">ABOUT</a></li>
-            <li><a href="/lost-items">LOST ITEMS</a></li>
-            <li><a href="/help">HELP</a></li>
-        </ul>
-    </nav>
-    <div class="content">
-        <div class="content-inner">
-            <h1 class="title">Welcome to DUT Lost & Found</h1>
-            <p class="description">Our mission is to efficiently reunite lost items with their owners. We provide a secure and user-friendly platform to report and search for lost belongings. Join our community to ensure that no item is lost forever.</p>
+    <div class="container">
+        <div class="left-section">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="dut-logo">
+            <h1>Let us help you find your Lost item.</h1>
             <div class="buttons">
-                <a href="/login" class="button button-primary">SIGN IN</a>
-                <a href="/register" class="button button-secondary">SIGN UP</a>
+                <a href="/login" class="button button-primary">Sign In</a>
+                <a href="/register" class="button button-secondary">Sign Up</a>
+            </div>
+        </div>
+        <div class="right-section">
+            <img src="/static/images/lost-item.jpg" alt="Searching for lost items">
+            <div class="nav-buttons">
+                <a href="/help">Help</a>
+                <a href="/about">About</a>
             </div>
         </div>
     </div>
-    <footer>
-        &copy; 2025 Inhlwathi-Bytes Inc.
+    <footer class="footer">
+        &copy; 2025 Inhlwathi-Bytes Inc. | <a href="/contact" style="color: #c2a763; text-decoration: none;">Contact Us</a> | <a href="/terms" style="color: #c2a763; text-decoration: none;">Terms & Privacy</a>
     </footer>
 </body>
 </html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - DUT Lost and Found</title>
+    <style>
+        /* Add the same styles as forgot_password.html */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="forgot-password-card">
+            <h2>Verify OTP</h2>
+            <form method="POST" action="{{ url_for('verify_otp', cellphone=cellphone) }}">
+                <div class="input-group">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" id="otp" name="otp" required>
+                </div>
+                <button type="submit" class="submit-button">Verify OTP</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

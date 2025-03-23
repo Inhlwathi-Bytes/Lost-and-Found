@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lost and Found{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="top-nav">
+            <img src="{{ url_for('static', filename='images/DUT.jpg') }}" alt="DUT Badge" class="dut-badge">
+            <div class="nav-links">
+                <a href="{{ url_for('about') }}">📖 ABOUT</a>
+                <a href="{{ url_for('help_page') }}">❓ HELP</a>
+            </div>
+            <div class="auth-links">
+                {% if current_user.is_authenticated %}
+                    <p>Welcome, {{ current_user.name }} ({{ current_user.role }})</p>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bottom-nav">
+        &copy; 2025 Inhlwathi-Bytes Inc.
+    </footer>
+</body>
+</html>

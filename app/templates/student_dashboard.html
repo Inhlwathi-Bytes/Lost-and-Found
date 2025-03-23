@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text */
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background-color: #c2a763; /* Gold background */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-bar .btn {
+            background-color: #000; /* Black buttons */
+            color: #fff; /* White text */
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-bar .btn:hover {
+            background-color: #333; /* Darker black on hover */
+        }
+
+        .nav-bar .btn.logout {
+            background-color: #dc3545; /* Red for logout */
+        }
+
+        .nav-bar .btn.logout:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff; /* White background */
+            color: #000; /* Black text */
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Welcome Message */
+        h2 {
+            color: #c2a763; /* Gold for welcome message */
+            text-align: center;
+        }
+
+        /* Search Box */
+        .search-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-box input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #c2a763; /* Gold button */
+            color: #000; /* Black text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .search-box button:hover {
+            background-color: #b29752; /* Darker gold on hover */
+        }
+
+        /* Lost Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(10cm, 1fr)); /* 10cm width */
+            gap: 2cm; /* 2cm gap between items */
+            margin-top: 20px;
+        }
+
+        /* Item Card */
+        .item-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            color: #000; /* Black text */
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 10cm; /* 10cm width */
+            height: 17cm; /* 17cm height */
+            box-sizing: border-box; /* Ensure padding is included in the size */
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .item-card h3 {
+            margin: 0;
+            color: #c2a763; /* Gold for item name */
+        }
+
+        .item-card p {
+            margin: 10px 0;
+        }
+
+        .item-card .btn {
+            background-color: #c2a763; /* Gold button */
+            color: #000; /* Black text */
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .item-card .btn:hover {
+            background-color: #b29752; /* Darker gold on hover */
+        }
+
+        /* Hidden Content */
+        .content-section {
+            display: none; /* Hide all sections by default */
+        }
+
+        .content-section.active {
+            display: block; /* Show the active section */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div>
+            <a href="#" class="btn" data-page="dashboard">Dashboard</a>
+            <a href="#" class="btn" data-page="lost_items">View All Lost Items</a>
+            <a href="#" class="btn" data-page="report_item">Report Lost Item</a>
+            <a href="#" class="btn" data-page="my_claims">My Claims</a>
+            <a href="#" class="btn" data-page="help">Help</a>
+            <a href="#" class="btn" data-page="about">About</a>
+        </div>
+        <div>
+            <a href="{{ url_for('logout') }}" class="btn logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Message -->
+        <h2>Welcome, {{ current_user.name }}!</h2>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard" class="content-section active">
+            <h3>Lost Items</h3>
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for items...">
+                <button onclick="searchItems()">Search</button>
+            </div>
+            <div class="items-grid">
+                {% for item in items %}
+                    <div class="item-card">
+                        <!-- Display the item's photo -->
+                        {% if item.photo %}
+                            <img src="{{ url_for('static', filename=item.photo) }}" alt="{{ item.item_name }}">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default-item.jpg') }}" alt="Default Item Image">
+                        {% endif %}
+                        <h3>{{ item.item_name }}</h3>
+                        <p><strong>Description:</strong> {{ item.description }}</p>
+                        <p><strong>Campus:</strong> {{ item.campus }}</p>
+                        <p>Found by: {{ item.found_by }}</p>
+                        <p>Found on: {{ item.found_day }}</p>
+                        <a href="{{ url_for('claim_item', item_id=item.id) }}" class="btn">Claim Item</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- View All Lost Items Content -->
+        <div id="lost_items" class="content-section">
+            <h3>All Lost Items</h3>
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInputAll" placeholder="Search for items...">
+                <button onclick="searchItemsAll()">Search</button>
+            </div>
+            <div class="items-grid">
+                {% for item in items %}
+                    <div class="item-card">
+                        <!-- Display the item's photo -->
+                        {% if item.photo %}
+                            <img src="{{ url_for('static', filename=item.photo) }}" alt="{{ item.item_name }}">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default-item.jpg') }}" alt="Default Item Image">
+                        {% endif %}
+                        <h3>{{ item.item_name }}</h3>
+                        <p><strong>Description:</strong> {{ item.description }}</p>
+                        <p><strong>Campus:</strong> {{ item.campus }}</p>
+                        <p>Found by: {{ item.found_by }}</p>
+                        <p>Found on: {{ item.found_day }}</p>
+                        <a href="{{ url_for('claim_item', item_id=item.id) }}" class="btn">Claim Item</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Report Lost Item Content -->
+        <div id="report_item" class="content-section">
+            <h3>Report Lost Item</h3>
+            <form action="{{ url_for('report_item') }}" method="POST">
+                <label for="item_name">Item Name:</label>
+                <input type="text" id="item_name" name="item_name" required>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea>
+                <label for="date_found">Date Found:</label>
+                <input type="date" id="date_found" name="date_found" required>
+                <label for="location_found">Location Found:</label>
+                <input type="text" id="location_found" name="location_found" required>
+                <label for="photo">Upload Photo:</label>
+                <input type="file" id="photo" name="photo">
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+
+        <!-- My Claims Content -->
+        <div id="my_claims" class="content-section">
+            <h3>My Claims</h3>
+            <ul>
+                {% for detail in claim_details %}
+                    <li class="claim-item {{ detail.claim.status }}">
+                        <strong>Student Name:</strong> {{ detail.claim.student_name }}<br>
+                        <strong>Student Number:</strong> {{ detail.claim.student_number }}<br>
+                        <strong>Status:</strong> {{ detail.claim.status }}<br>
+                        {% if detail.claim.status == 'approved' %}
+                            <p style="color: #28a745;">
+                                Approved. Come fetch your item at Lost & Found Office in <strong>{{ detail.campus }}</strong>.
+                            </p>
+                        {% elif detail.claim.status == 'rejected' %}
+                            <p style="color: #dc3545;">
+                                Rejected. Please contact the Lost & Found Office for more details.
+                            </p>
+                        {% else %}
+                            <p style="color: #ffc107;">
+                                Pending. Your claim is under review.
+                            </p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Help Content -->
+        <div id="help" class="content-section">
+            <h3>Help & Support</h3>
+            <p>Welcome to the DUT Lost & Found Help page. Here you can find answers to frequently asked questions and get assistance with using our platform.</p>
+            <ul>
+                <li><strong>How do I report a lost item?</strong><br>
+                    To report a lost item, navigate to the "Report Lost Item" page and fill out the form with as much detail as possible. Include a photo if you have one.</li>
+                <li><strong>How do I search for a found item?</strong><br>
+                    Use the search bar on the "Found Items" page to search by item name, category, or date.</li>
+                <li><strong>What happens after I report a lost item?</strong><br>
+                    Your report will be reviewed by our team. If a match is found, you will be notified via email.</li>
+                <li><strong>How long is the waiting period for collecting an item?</strong><br>
+                    There is a waiting period of 7 days to resolve any disputes before an item can be collected.</li>
+                <li><strong>How do I contact support?</strong><br>
+                    For further assistance, please email us at support@dutlostandfound.com.</li>
+            </ul>
+        </div>
+
+        <!-- About Content -->
+        <div id="about" class="content-section">
+            <h3>About DUT Lost & Found</h3>
+            <p>The DUT Lost & Found web application is a project developed by Inhlwathi Bytes, a team of dedicated students from Durban University of Technology. Our mission is to enhance campus life by providing an efficient and secure platform for reporting, tracking, and recovering lost items.</p>
+            <p>We understand the frustration and inconvenience caused by misplaced belongings. That's why we've created a user-friendly system that simplifies the process of finding lost items and reuniting them with their rightful owners.</p>
+            <p>Our team is committed to continuous improvement and providing excellent support to our users. We value your feedback and are dedicated to making the DUT campus a more secure and convenient place for everyone.</p>
+            <p><strong>Contact Us:</strong> For any inquiries or support, please feel free to contact us at support@dutlostandfound.com.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript for Dynamic Content Switching and Search Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('.nav-bar .btn[data-page]');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            // Function to show the clicked page and hide others
+            function showPage(pageId) {
+                contentSections.forEach(section => {
+                    if (section.id === pageId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            }
+
+            // Add click event listeners to navigation buttons
+            navButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault(); // Prevent default link behavior
+                    const pageId = this.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+
+            // Show the default page (Dashboard) on initial load
+            showPage('dashboard');
+        });
+
+        // Search Functionality for Dashboard
+        function searchItems() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('#dashboard .item-card');
+
+            items.forEach(item => {
+                const itemName = item.querySelector('h3').textContent.toLowerCase();
+                const itemDescription = item.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
+                const itemCampus = item.querySelector('p:nth-of-type(2)').textContent.toLowerCase();
+                const itemFoundBy = item.querySelector('p:nth-of-type(3)').textContent.toLowerCase();
+                const itemFoundOn = item.querySelector('p:nth-of-type(4)').textContent.toLowerCase();
+
+                if (
+                    itemName.includes(searchTerm) ||
+                    itemDescription.includes(searchTerm) ||
+                    itemCampus.includes(searchTerm) ||
+                    itemFoundBy.includes(searchTerm) ||
+                    itemFoundOn.includes(searchTerm)
+                ) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Search Functionality for All Lost Items
+        function searchItemsAll() {
+            const searchTerm = document.getElementById('searchInputAll').value.toLowerCase();
+            const items = document.querySelectorAll('#lost_items .item-card');
+
+            items.forEach(item => {
+                const itemName = item.querySelector('h3').textContent.toLowerCase();
+                const itemDescription = item.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
+                const itemCampus = item.querySelector('p:nth-of-type(2)').textContent.toLowerCase();
+                const itemFoundBy = item.querySelector('p:nth-of-type(3)').textContent.toLowerCase();
+                const itemFoundOn = item.querySelector('p:nth-of-type(4)').textContent.toLowerCase();
+
+                if (
+                    itemName.includes(searchTerm) ||
+                    itemDescription.includes(searchTerm) ||
+                    itemCampus.includes(searchTerm) ||
+                    itemFoundBy.includes(searchTerm) ||
+                    itemFoundOn.includes(searchTerm)
+                ) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background-color: #f0f2f5;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #3f0e40;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+            position: fixed;
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 20px;
+            width: calc(100% - 260px);
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3f0e40;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .content-container {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        /* Add styles for other content as needed */
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="/add-item">Add New Item</a></li>
+            <li><a href="/lost-items">Lost Items</a></li>
+            <li><a href="/view-claims">View Claims</a></li>
+            <li><a href="/view-reported-items">View Reported Items</a></li>
+            <li><a href="/help">Help</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="top-nav">
+            <form action="{{ url_for('search') }}" method="get">
+                <input type="text" class="search-bar" name="query" placeholder="Search Lost Items...">
+                <button type="submit">Search</button>
+            </form>
+            <div class="user-icon">AW</div>
+        </div>
+
+        <div class="content-container">
+            <h2>Search Results for "{{ query }}"</h2>
+            {% if lost_items %}
+                <h3>Lost Items</h3>
+                <ul>
+                    {% for item in lost_items %}
+                        <li>{{ item.item_name }} - {{ item.description }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if claims %}
+                <h3>Claims</h3>
+                <ul>
+                    {% for claim in claims %}
+                        <li>{{ claim.student_name }} - {{ claim.student_number }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if reported_items %}
+                <h3>Reported Items</h3>
+                <ul>
+                    {% for item in reported_items %}
+                        <li>{{ item.item_name }} - {{ item.location_found }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if not lost_items and not claims and not reported_items %}
+                <p>No results found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Placeholder for any JavaScript functionality
+    </script>
+</body>
+</html>

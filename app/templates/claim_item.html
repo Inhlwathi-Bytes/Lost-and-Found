@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h4>Claim Item: {{ item.item_name }}</h4>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="input-field">
+            <input type="text" id="student_name" name="student_name" required>
+            <label for="student_name">Your Name</label>
+        </div>
+        <div class="input-field">
+            <input type="text" id="student_number" name="student_number" required>
+            <label for="student_number">Student Number</label>
+        </div>
+        <div class="input-field">
+            <input type="email" id="student_email" name="student_email" required>
+            <label for="student_email">Email</label>
+        </div>
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Upload ID Document</span>
+                <input type="file" id="id_document" name="id_document" required>
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Upload your ID document">
+            </div>
+        </div>
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Upload Proof of Registration</span>
+                <input type="file" id="proof_of_registration" name="proof_of_registration" required>
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Upload proof of registration">
+            </div>
+        </div>
+        <button type="submit" class="btn waves-effect waves-light">Submit Claim</button>
+    </form>
+</div>
+{% endblock %}
