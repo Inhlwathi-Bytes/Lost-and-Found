@@ -80,6 +80,7 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             padding-right: 10px;
+            padding-block: 5px;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
@@ -168,11 +169,10 @@
                 <div class="avatar">{{ item.category[0] if item.category else '?' }}</div>
                 {% endif %}
                 <div class="item-details">
+                    <p><strong>Item:</strong> {{ item.category }}</p>
                     <p><strong>Item:</strong> {{ item.item_name }}</p>
-                    <p>{{ item.description }}</p>
-                    <p><strong>Found on:</strong> {{ item.found_day }}</p>
-                    <p><strong>Found by:</strong> {{ item.found_by }}</p>
-                    <p><strong>Campus:</strong> {{ item.campus }}</p>
+                    <p><strong>Description:</strong> {{ item.description }}</p>
+                    <p><strong>Claimed:</strong> {{ item.claimed }}</p>
                 </div>
                 {% if user_role == 'student' %}
                 <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Claim Item</a>

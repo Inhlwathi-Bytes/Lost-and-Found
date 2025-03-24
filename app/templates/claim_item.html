@@ -1,40 +1,188 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<div class="container">
-    <h4>Claim Item: {{ item.item_name }}</h4>
-    <form method="POST" enctype="multipart/form-data">
-        <div class="input-field">
-            <input type="text" id="student_name" name="student_name" required>
-            <label for="student_name">Your Name</label>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Item</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        nav {
+            background-color: #c2a763;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 0 !important;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
+
+        @media only screen and (min-width: 601px) {
+
+            nav,
+            nav .nav-wrapper i,
+            nav a.sidenav-trigger,
+            nav a.sidenav-trigger i {
+                height: unset !important;
+                line-height: unset !important;
+            }
+        }
+        @media only screen and (min-width: 1200px) {
+    html {
+        font-size: unset !important;
+    }
+}
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h5 {
+            color: #3f0e40;
+            text-align: center;
+        }
+
+        .input-field input,
+        .input-field textarea,
+        .input-field select {
+            border-bottom: 2px solid #c2a763 !important;
+            box-shadow: none !important;
+        }
+
+        .input-field input:focus,
+        .input-field textarea:focus,
+        .input-field select:focus {
+            border-bottom: 2px solid #3f0e40 !important;
+            box-shadow: 0 1px 0 0 #3f0e40 !important;
+        }
+
+        .btn {
+            background-color: #c2a763;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #3f0e40;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title"></span>
         </div>
-        <div class="input-field">
-            <input type="text" id="student_number" name="student_number" required>
-            <label for="student_number">Student Number</label>
-        </div>
-        <div class="input-field">
-            <input type="email" id="student_email" name="student_email" required>
-            <label for="student_email">Email</label>
-        </div>
-        <div class="file-field input-field">
-            <div class="btn">
-                <span>Upload ID Document</span>
-                <input type="file" id="id_document" name="id_document" required>
+        <ul>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/help">HELP</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <form action="/add-item" method="POST" enctype="multipart/form-data">
+            <h5>Claim Item: {{ item.item_name }}</h5>
+
+            <!-- Description -->
+            <div class="input-field">
+                <textarea id="description" name="owner-description" class="materialize-textarea" required></textarea>
+                <label for="description">Extra Details</label>
             </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Upload your ID document">
+
+            <!-- Day the Item was Lost -->
+            <div class="input-field">
+                <input type="text" id="lost_day" name="lost_day" class="datepicker">
+                <label for="lost_day">Day Item Was Lost</label>
             </div>
-        </div>
-        <div class="file-field input-field">
-            <div class="btn">
-                <span>Upload Proof of Registration</span>
-                <input type="file" id="proof_of_registration" name="proof_of_registration" required>
+
+            <!-- Campus Dropdown -->
+            <div class="input-field">
+                <select id="campus" name="campus" required>
+                    <option value="" disabled selected>Choose campus</option>
+                    <option value="Steve Biko">Steve Biko</option>
+                    <option value="Ml Sulton">Ml Sulton</option>
+                    <option value="Ritson">Ritson</option>
+                    <option value="City Campus">City Campus</option>
+                    <option value="Midlands">Midlands</option>
+                    <option value="Brickfield">Brickfield</option>
+                </select>
+                <label for="campus">Campus</label>
             </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Upload proof of registration">
-            </div>
-        </div>
-        <button type="submit" class="btn waves-effect waves-light">Submit Claim</button>
-    </form>
-</div>
-{% endblock %}
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn waves-effect waves-light">Submit Claim</button>
+        </form>
+    </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dateElems = document.querySelectorAll('.datepicker');
+            M.Datepicker.init(dateElems, {
+                autoClose: true,
+                format: 'mmmm dd, yyyy',
+                i18n: {
+                    done: 'Select'
+                },
+                container: 'body',
+                theme: {
+                    main: '#3f0e40',
+                    selected: '#c2a763'
+                }
+            });
+
+            var selectElems = document.querySelectorAll('select');
+            M.FormSelect.init(selectElems);
+        });
+    </script>
+</body>
+
+</html>
