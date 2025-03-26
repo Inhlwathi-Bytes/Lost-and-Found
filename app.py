@@ -11,7 +11,7 @@ from flask_mail import Mail, Message
 import secrets  # For generating secure tokens
 from datetime import datetime, timedelta  # For handling token expiration
 
-app = Flask(__name__, template_folder="app/templates")
+app = Flask(__name__, template_folder="templates")
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:Evolution001220@lostandfound.cf0w6i0yko76.us-east-2.rds.amazonaws.com:3306/lostandfound"
@@ -617,3 +617,4 @@ def view_my_claims():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # Default to 10000 if PORT isn't set
     app.run(host="0.0.0.0", port=port, debug=True)
+    # app.run(debug=True)
