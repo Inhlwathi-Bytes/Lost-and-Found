@@ -130,7 +130,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Routes
 @app.route('/')
 def home():
-    return render_template('Home.html')
+    return render_template('home.html')
 
 @app.route('/about')
 def about():
