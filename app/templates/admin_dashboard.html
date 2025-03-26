@@ -9,66 +9,24 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
             background-color: #1a1a1a;
             color: #c2a763;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #232323;
-            color: #c2a763;
-            height: 100vh;
-            padding: 20px;
-            position: fixed;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            padding: 15px;
-            margin: 5px 0;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .sidebar ul li:hover {
-            background-color: #333;
-        }
-        .sidebar ul li a {
-            color: #c2a763;
-            text-decoration: none;
-            display: block;
-            font-size: 16px;
-        }
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            width: calc(100% - 250px);
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
         }
         .top-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: #232323;
-            padding: 10px 20px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
             position: sticky;
             top: 0;
+            width: 100%;
             z-index: 100;
-            flex-shrink: 0; /* Ensures it doesn't scroll */
-        }
-        .top-nav .logo {
-            display: flex;
-            align-items: center;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
         .top-nav .logo span {
             font-size: 20px;
@@ -80,125 +38,126 @@
             width: 300px;
             border: 1px solid #c2a763;
             border-radius: 5px;
-            margin-right: 10px;
             background-color: #1a1a1a;
             color: #c2a763;
         }
         .search-bar::placeholder {
             color: #c2a763;
         }
-        .search-bar:focus {
-            outline: none;
-            border-color: #c2a763;
-        }
-        .user-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #c2a763;
-            color: #232323;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .content-container {
-            background: #232323;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+        .button-primary {
+            background: transparent;
+            border: 2px solid #c2a763;
             color: #c2a763;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .button-primary:hover {
+            background: #c2a763;
+            color: #232323;
+        }
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+        .card {
+            background-color: #232323;
+            width: 300px;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 0px 15px #c2a763;
+        }
+        .card a {
+            text-decoration: none;
+            color: #c2a763;
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+        }
+        .card p {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #b39555;
         }
         footer {
             background-color: #232323;
             color: #c2a763;
             text-align: center;
             padding: 10px 0;
+            width: 100%;
             position: fixed;
             bottom: 0;
-            width: 100%;
-            z-index: 100;
         }
-        footer p {
-            margin: 0;
-            font-size: 14px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-left: 6px;
         }
-        .button {
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 1em;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s;
-            cursor: pointer;
+
+        .image-logo {
+            height: 50px;
+            margin-right: 5px;
         }
-        .button-primary {
-            background: transparent;
-            border: 2px solid #c2a763;
-            color: #c2a763;
+
+        .nav-title {
+            font-size: 1.2em;
         }
-        .button-primary:hover {
-            background: #c2a763;
-            color: #232323;
-        }
-        .button-secondary {
-            background: #c2a763;
-            color: #232323;
-        }
-        .button-secondary:hover {
-            background: #b39555;
-        }
+
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Dashboard</h2>
-        <ul>
-            <li><a href="/add-item">Add New Item</a></li>
-            <li><a href="/lost-items">Lost Items</a></li>
-            <li><a href="/view-claims">View Claims</a></li>
-            <li><a href="/view-reported-items">View Reported Items</a></li>
-            <li><a href="/help">Help</a></li>
-            <li><a href="/logout">Logout</a></li>
-        </ul>
+    <div class="top-nav">
+        <div class="logo-container logo">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="image-logo">
+            <span class="nav-title">DUT Admin</span>
+        </div>
+        <form action="{{ url_for('search') }}" method="get">
+            <input type="text" class="search-bar" name="query" placeholder="Search Lost Items...">
+            <button type="submit" class="button-primary">Search</button>
+        </form>
     </div>
 
-    <div class="main-content">
-        <div class="top-nav">
-            <div class="logo">
-                <span>DUT Admin</span>
-            </div>
-            <form action="{{ url_for('search') }}" method="get">
-                <input type="text" class="search-bar" name="query" placeholder="Search Lost Items...">
-                <button type="submit" class="button button-primary">Search</button>
-            </form>
-            <div class="user-icon">AW</div>
+    <div class="dashboard-container">
+        <div class="card">
+            <a href="/add-item">Add New Item</a>
+            <p>Register a newly found item in the system.</p>
         </div>
-
-        <div class="content-container">
-            {% if active_page == 'add-item' %}
-                {% include 'add_item.html' %}
-            {% elif active_page == 'lost-items' %}
-                {% include 'lost_items.html' %}
-            {% elif active_page == 'view-claims' %}
-                {% include 'view_claims.html' %}
-            {% elif active_page == 'view-reported-items' %}
-                {% include 'view_reported_items.html' %}
-            {% else %}
-                <h2>Welcome to the Admin Dashboard</h2>
-                <p>Select an option from the sidebar.</p>
-            {% endif %}
+        <div class="card">
+            <a href="/lost-items">Lost Items</a>
+            <p>View and manage all lost items.</p>
+        </div>
+        <div class="card">
+            <a href="/view-claims">View Claims</a>
+            <p>Check the claims submitted by users.</p>
+        </div>
+        <div class="card">
+            <a href="/view-reported-items">View Reported Items</a>
+            <p>Review items that have been reported.</p>
+        </div>
+        <div class="card">
+            <a href="/help">Help</a>
+            <p>Access support and user guidelines.</p>
+        </div>
+        <div class="card">
+            <a href="/logout">Logout</a>
+            <p>Sign out of the dashboard securely.</p>
         </div>
     </div>
 
     <footer>
         <p>&copy; 2025 Inhlwathi-Bytes Inc.</p>
     </footer>
-
-    <script>
-        // Placeholder for any JavaScript functionality
-    </script>
 </body>
 </html>

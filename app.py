@@ -14,7 +14,7 @@ from datetime import datetime, timedelta  # For handling token expiration
 app = Flask(__name__, template_folder="app/templates")
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:Revolution00/12/20@localhost:3306/lostandfound"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:Evolution001220@lostandfound.cf0w6i0yko76.us-east-2.rds.amazonaws.com:3306/lostandfound"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Required for session management
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use your email provider's SMTP server
@@ -41,8 +41,6 @@ login_manager.login_view = 'login'  # Redirect to login page if user is not auth
 # Initialize Flask-Mail
 mail = Mail(app)
 
-
-# Define the User model
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -51,53 +49,53 @@ class User(db.Model, UserMixin):
     cellphone = db.Column(db.String(15), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
-    role = db.Column(db.String(20), default='student')  # 'admin' or 'student'
-    claims = db.relationship('Claim', backref='student', lazy=True)  # Relationship to Claim
+    role = db.Column(db.String(20), default='student')
+    claims = db.relationship('Claim', backref='user', lazy=True)  # One-to-Many
+    reported_items = db.relationship('ReportedItem', backref='user', lazy=True)  # One-to-Many
+    # Define a relationship to the User model
+    # reporter = db.relationship('User', backref='reported_items')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
 
-# Define the LostItem model
 class LostItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(100), nullable=False)
     item_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
     found_day = db.Column(db.String(50), nullable=False)
-    found_by = db.Column(db.String(100), nullable=False)
+    found_by = db.Column(db.String(20), nullable=False)  # Discrete student number
     campus = db.Column(db.String(100), nullable=False)
-    photo = db.Column(db.String(200), nullable=True)  # Path to the uploaded photo
-    claimed = db.Column(db.Boolean, default=False)  # Whether the item has been claimed
-
+    photo = db.Column(db.String(200), nullable=True)
+    taken = db.Column(db.Boolean, default=False)
+    claimed = db.Column(db.Boolean, default=False)
+    claims = db.relationship('Claim', backref='lost_item', lazy=True)  # One-to-Many
 
 class Claim(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    student_name = db.Column(db.String(100), nullable=False)
-    student_number = db.Column(db.String(20), nullable=False)
-    student_email = db.Column(db.String(100), nullable=False)
+    extraDetail = db.Column(db.String(200), nullable=False)
     lost_item_id = db.Column(db.Integer, db.ForeignKey('lost_item.id'), nullable=False)
-    id_document = db.Column(db.String(200), nullable=False)  # Path to the uploaded ID document
-    proof_of_registration = db.Column(db.String(200), nullable=False)  # Path to the proof of registration
+    lost_day = db.Column(db.String(50), nullable=False)
     claim_date = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)   # Foreign key to User
+    status = db.Column(db.String(20), default='pending')
+    campus = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Tie claim to a system user
 
 class ReportedItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item_name = db.Column(db.String(100), nullable=False)
     photo = db.Column(db.String(200), nullable=True)  # Path to the uploaded photo
     date_found = db.Column(db.String(50), nullable=False)
-    location_found = db.Column(db.String(100), nullable=False)
-    reported_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User
-    status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
+    campus = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Tie claim to a system user
 
     # Define a relationship to the User model
-    reporter = db.relationship('User', backref='reported_items')
+    # reporter = db.relationship('User', backref='reported_items')
 
+  
 # User loader function for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
@@ -221,7 +219,7 @@ def register():
 @app.route('/lost-items')
 @login_required
 def lostitems():
-    items = LostItem.query.filter_by(claimed=False).all()  # Fetch unclaimed items
+    items = LostItem.query.filter_by().all() 
     return render_template('lost_items.html', items=items, user_role=current_user.role)
 
 @app.route('/add-item', methods=['GET', 'POST'])
@@ -262,7 +260,7 @@ def add_item():
         db.session.commit()
 
         flash('Item added successfully!', 'success')
-        return redirect(url_for('lost_items_page'))
+        return redirect(url_for('lostitems'))
 
     return render_template('add_item.html')
 
@@ -279,7 +277,7 @@ def admin_dashboard():
     reported_items = db.session.query(
         ReportedItem,
         User.name.label('reporter_name')
-    ).join(User, ReportedItem.reported_by == User.id).all()
+    ).join(User, ReportedItem.user_id == User.id).all()
 
     return render_template('admin_dashboard.html', items=items, claims=claims, reported_items=reported_items)
 
@@ -310,43 +308,38 @@ def student_dashboard():
 @app.route('/claim-item/<int:item_id>', methods=['GET', 'POST'])
 @login_required
 def claim_item(item_id):
+    print("nethos starts here")
     item = LostItem.query.get_or_404(item_id)
 
     if current_user.role != 'student':
         flash('Only students can claim items.', 'error')
-        return redirect(url_for('lost_items_page'))
+        return redirect(url_for('lostitems'))
 
     if request.method == 'POST':
-        student_name = request.form.get('student_name')
-        student_number = request.form.get('student_number')
-        student_email = request.form.get('student_email')
-        id_document = request.files.get('id_document')
-        proof_of_registration = request.files.get('proof_of_registration')
-
-        # Save the uploaded documents
-        id_document_path = os.path.join(app.config['UPLOAD_FOLDER'], id_document.filename)
-        proof_of_registration_path = os.path.join(app.config['UPLOAD_FOLDER'], proof_of_registration.filename)
-        id_document.save(id_document_path)
-        proof_of_registration.save(proof_of_registration_path)
+         # Get form data
+        extra_details = request.form.get('owner-description')
+        lost_day = request.form.get('lost_day')
+        campus = request.form.get('campus')
 
         # Create a new Claim
         new_claim = Claim(
-            student_name=student_name,
-            student_number=student_number,
-            student_email=student_email,
             lost_item_id=item.id,
-            id_document=id_document_path,
-            proof_of_registration=proof_of_registration_path,
+            extraDetail = extra_details,
+            lost_day = lost_day,
+            campus = campus,
             user_id=current_user.id  # Use user_id instead of student_id
         )
         db.session.add(new_claim)
+
+        print("here now")
+        print(new_claim)
 
         # Mark the item as claimed
         item.claimed = True
         db.session.commit()
 
         flash('Claim submitted successfully!', 'success')
-        return redirect(url_for('student_dashboard'))
+        return redirect(url_for('lostitems'))
 
     return render_template('claim_item.html', item=item)
 
@@ -358,10 +351,7 @@ def view_claims():
         return redirect(url_for('home'))
 
     claims = Claim.query.all()
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return render_template('view_claims.html', claims=claims)
-    else:
-        return render_template('admin_dashboard.html', active_page='view-claims', claims=claims)
+    return render_template('view_claims.html', claims=claims)
     
 # Forgot password route
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -488,7 +478,7 @@ def report_item():
             photo=photo_path,
             date_found=date_found,
             location_found=location_found,
-            reported_by=current_user.id  # Automatically set the user who reported the item
+            user_id=current_user.id  # Automatically set the user who reported the item
         )
         db.session.add(new_report)
         db.session.commit()
@@ -508,7 +498,7 @@ def view_reported_items():
     reported_items = db.session.query(
         ReportedItem,
         User.name.label('reporter_name')
-    ).join(User, ReportedItem.reported_by == User.id).all()
+    ).join(User, ReportedItem.user_id == User.id).all()
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return render_template('view_reported_items.html', reported_items=reported_items)
@@ -533,7 +523,7 @@ def approve_reported_item(item_id):
         item_name=reported_item.item_name,
         description='Reported by student',  # You can modify this as needed
         found_day=reported_item.date_found,
-        found_by=User.query.get(reported_item.reported_by).name,
+        found_by=User.query.get(reported_item.user_id).name,
         campus=reported_item.location_found,
         photo=reported_item.photo
     )

@@ -3,43 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claims</title>
+    <title>Admin - View Claims</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            background-color: #eef1f5;
+        }
+        .navbar {
+            background-color: #3f0e40;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
         }
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
             background: white;
+            border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-        h4 {
-            text-align: center;
-            color: #333;
-        }
-        .claims-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .claims-column {
-            border: 1px solid #ddd;
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background-color: #3f0e40;
+            padding: 10px;
             border-radius: 5px;
-            padding: 15px;
-            background-color: #f9f9f9;
         }
-        .claims-column h5 {
-            margin-top: 0;
-            color: #333;
+        .tab {
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
         }
-        .collection {
-            list-style: none;
-            padding: 0;
+        .tab.active {
+            background-color: #ffcc00;
+            color: black;
+        }
+        .claims-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .claims-section.active {
+            display: block;
         }
         .collection-item {
             padding: 15px;
@@ -48,112 +66,81 @@
             border-radius: 5px;
             background-color: white;
         }
-        .collection-item.pending {
-            border-left: 5px solid #ffc107; /* Yellow for pending */
-        }
-        .collection-item.approved {
-            border-left: 5px solid #28a745; /* Green for approved */
-        }
-        .collection-item.rejected {
-            border-left: 5px solid #dc3545; /* Red for rejected */
-        }
-        .title {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
-        .secondary-content {
-            float: right;
-            margin-left: 10px;
-            color: #3f0e40;
-            text-decoration: none;
-        }
-        .secondary-content:hover {
-            text-decoration: underline;
-        }
-        .btn {
-            padding: 5px 10px;
-            color: white;
-            text-decoration: none;
-            border-radius: 3px;
-            font-size: 14px;
-        }
-        .btn.green {
-            background-color: #28a745;
-        }
-        .btn.red {
-            background-color: #dc3545;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
+        .collection-item.pending { border-left: 5px solid #ffc107; }
+        .collection-item.approved { border-left: 5px solid #28a745; }
+        .collection-item.rejected { border-left: 5px solid #dc3545; }
+        .title { font-weight: bold; display: block; }
+        .btn { padding: 5px 10px; color: white; text-decoration: none; border-radius: 3px; font-size: 14px; }
+        .btn.green { background-color: #28a745; }
+        .btn.red { background-color: #dc3545; }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+        <span>Claims Management</span>
+    </div>
+    
     <div class="container">
-        <h4>Claims</h4>
+        <h2 style="text-align: center;">View Claims</h2>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showSection('pending')">Pending Claims</div>
+            <div class="tab" onclick="showSection('approved')">Approved Claims</div>
+            <div class="tab" onclick="showSection('rejected')">Rejected Claims</div>
+        </div>
 
-        <!-- Claims Grid -->
-        <div class="claims-grid">
-            <!-- Pending Claims Column -->
-            <div class="claims-column">
-                <h5>Pending Claims</h5>
-                <ul class="collection">
-                    {% for claim in claims if claim.status == 'pending' %}
-                        <li class="collection-item pending">
-                            <span class="title">{{ claim.student_name }}</span>
-                            <p><strong>Student Number:</strong> {{ claim.student_number }}</p>
-                            <p><strong>Email:</strong> {{ claim.student_email }}</p>
-                            <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
-                            <p><strong>Status:</strong> {{ claim.status }}</p>
-                            <a href="{{ url_for('static', filename=claim.id_document) }}" class="secondary-content">View ID</a>
-                            <a href="{{ url_for('static', filename=claim.proof_of_registration) }}" class="secondary-content">View Proof</a>
-                            <div class="secondary-content">
-                                <a href="{{ url_for('approve_claim', claim_id=claim.id) }}" class="btn green">Approve</a>
-                                <a href="{{ url_for('reject_claim', claim_id=claim.id) }}" class="btn red">Reject</a>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <!-- Pending Claims -->
+        <div id="pending" class="claims-section active">
+            {% for claim in claims if claim.status == 'pending' %}
+                <div class="collection-item pending">
+                    <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
+                    <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
+                    <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
+                    <p><strong>Campus:</strong> {{ claim.campus }}</p>
+                    <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+                    <div>
+                        <a href="{{ url_for('approve_claim', claim_id=claim.id) }}" class="btn green">Approve</a>
+                        <a href="{{ url_for('reject_claim', claim_id=claim.id) }}" class="btn red">Reject</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-            <!-- Approved Claims Column -->
-            <div class="claims-column">
-                <h5>Approved Claims</h5>
-                <ul class="collection">
-                    {% for claim in claims if claim.status == 'approved' %}
-                        <li class="collection-item approved">
-                            <span class="title">{{ claim.student_name }}</span>
-                            <p><strong>Student Number:</strong> {{ claim.student_number }}</p>
-                            <p><strong>Email:</strong> {{ claim.student_email }}</p>
-                            <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
-                            <p><strong>Status:</strong> {{ claim.status }}</p>
-                            <a href="{{ url_for('static', filename=claim.id_document) }}" class="secondary-content">View ID</a>
-                            <a href="{{ url_for('static', filename=claim.proof_of_registration) }}" class="secondary-content">View Proof</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <!-- Approved Claims -->
+        <div id="approved" class="claims-section">
+            {% for claim in claims if claim.status == 'approved' %}
+                <div class="collection-item approved">
+                    <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
+                    <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
+                    <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
+                    <p><strong>Campus:</strong> {{ claim.campus }}</p>
+                    <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+                </div>
+            {% endfor %}
+        </div>
 
-            <!-- Rejected Claims Column -->
-            <div class="claims-column">
-                <h5>Rejected Claims</h5>
-                <ul class="collection">
-                    {% for claim in claims if claim.status == 'rejected' %}
-                        <li class="collection-item rejected">
-                            <span class="title">{{ claim.student_name }}</span>
-                            <p><strong>Student Number:</strong> {{ claim.student_number }}</p>
-                            <p><strong>Email:</strong> {{ claim.student_email }}</p>
-                            <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
-                            <p><strong>Status:</strong> {{ claim.status }}</p>
-                            <a href="{{ url_for('static', filename=claim.id_document) }}" class="secondary-content">View ID</a>
-                            <a href="{{ url_for('static', filename=claim.proof_of_registration) }}" class="secondary-content">View Proof</a>
-                            <p><strong>Note:</strong> This item has been returned to the lost items list.</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <!-- Rejected Claims -->
+        <div id="rejected" class="claims-section">
+            {% for claim in claims if claim.status == 'rejected' %}
+                <div class="collection-item rejected">
+                    <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
+                    <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
+                    <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
+                    <p><strong>Campus:</strong> {{ claim.campus }}</p>
+                    <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+                </div>
+            {% endfor %}
         </div>
     </div>
+    
+    <script>
+        function showSection(section) {
+            document.querySelectorAll('.claims-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            document.querySelector(".tab[onclick='showSection(" + section + ")']").classList.add('active');
+        }
+    </script>
 </body>
 </html>
