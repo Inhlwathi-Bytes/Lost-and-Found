@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,59 +12,202 @@
             padding: 0;
             background-color: #f0f2f5;
         }
+
         .container {
             max-width: 600px;
             margin: 50px auto;
-            padding: 20px;
+            padding: 30px;
             background: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
         }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
-        .form-group input, .form-group textarea, .form-group select {
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
             box-sizing: border-box;
+            transition: 0.3s;
+            font-size: 14px;
         }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3f0e40;
+            outline: none;
+            box-shadow: 0px 0px 8px rgba(63, 14, 64, 0.3);
+        }
+
+        /* Custom file input styling */
+        .file-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .file-input input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .file-input label {
+            display: inline-block;
+            background: #3f0e40;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .file-input label:hover {
+            background: #5e2c60;
+        }
+
+        /* Date picker styling */
+        input[type="date"] {
+            appearance: none;
+            background: white;
+            cursor: pointer;
+        }
+
         .btn {
             background-color: #3f0e40;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
             cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 6px;
+            transition: 0.3s;
         }
+
         .btn:hover {
             background-color: #5e2c60;
         }
+
+        nav {
+            background-color: #2e2e2e;
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
     </style>
+    
 </head>
+
 <body>
+    <nav>
+        <div class="logo-container">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title">
+                <a style="color: unset; text-decoration: none;" href="/lost-items">
+                    {% if user.role == 'student' %}
+                    {{ user.name }} {{ user.surname }}
+                    {% else %}
+                    DUT Admin
+                    {% endif %}
+                </a>
+            </span>
+        </div>
+
+        <ul>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            {% if user.role == 'student' %}
+            <li><a href="/report-item">REPORT NEW</a></li>
+            {% endif %}
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/help">HELP</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
-        <h2>Report Lost Item</h2>
+        <h2 style="text-align: center;">Report Lost Item</h2>
         <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="item_name">Item Name</label>
                 <input type="text" id="item_name" name="item_name" required>
             </div>
-            <div class="form-group">
-                <label for="photo">Photo of Item</label>
+
+            <div class="form-group file-input">
+                <label for="photo">Upload Photo</label>
                 <input type="file" id="photo" name="photo">
             </div>
+
             <div class="form-group">
                 <label for="date_found">Date Found</label>
                 <input type="date" id="date_found" name="date_found" required>
             </div>
+
             <div class="form-group">
-                <label for="location_found">Location Found</label>
-                <input type="text" id="location_found" name="location_found" required>
+                <label for="campus">Campus Location</label>
+                <select id="campus" name="campus" required>
+                    <option value="">Select a campus</option>
+                    <option value="Steve Biko">Steve Biko Campus</option>
+                    <option value="Indumiso">Indumiso Campus</option>
+                    <option value="Ritson">Ritson Campus</option>
+                    <option value="City">City Campus</option>
+                    <option value="ML Sultan">ML Sultan Campus</option>
+                    <option value="Brickfield">Brickfield Campus</option>
+                </select>
             </div>
+
             <button type="submit" class="btn">Report Item</button>
         </form>
     </div>
+    
 </body>
+
 </html>

@@ -18,9 +18,9 @@
         }
 
         nav {
-            background-color: #c2a763;
+            background-color: #2e2e2e;
             color: white;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -67,11 +67,12 @@
                 line-height: unset !important;
             }
         }
+
         @media only screen and (min-width: 1200px) {
-    html {
-        font-size: unset !important;
-    }
-}
+            html {
+                font-size: unset !important;
+            }
+        }
 
         .container {
             max-width: 600px;
@@ -122,6 +123,7 @@
         </div>
         <ul>
             <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/report-item">REPORT NEW</a></li>
             <li><a href="/about">ABOUT</a></li>
             <li><a href="/help">HELP</a></li>
             <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +10,72 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <style>
         body {
-            background-color: #f3f4f6;
-            color: #37474f;
+            background-color: #2E2E2C
         }
+
         .container {
             margin-top: 30px;
             max-width: 600px;
             background: white;
             padding: 20px;
-            border-radius: 10px;
+            /* border-radius: 10px; */
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         h5 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .btn {
             background-color: #3f0e40;
         }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #232323;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-nav .logo span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c2a763;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-left: 6px;
+        }
+
+        .image-logo {
+            height: 50px;
+            margin-right: 5px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
+
     </style>
 </head>
+
 <body>
+    <div class="top-nav">
+        <div class="logo-container logo">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="image-logo">
+            <span class="nav-title"> <a style="color: unset;" href="/admin_dashboard">DUT Admin</a> </span>
+        </div>
+        <div style="color: white;" class="">
+            <span>Add Item</span>
+        </div>
+    </div>
     <div class="container">
         <h5>Add a Lost Item</h5>
         <form action="/add-item" method="POST" enctype="multipart/form-data">
@@ -101,10 +147,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             M.FormSelect.init(document.querySelectorAll('select'));
             M.Datepicker.init(document.querySelectorAll('.datepicker'), { format: 'yyyy-mm-dd' });
         });
     </script>
 </body>
+
 </html>

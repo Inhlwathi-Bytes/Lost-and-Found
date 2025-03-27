@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +11,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #eef1f5;
+            background-color: #232323;
+            color: #c2a763;
+            overflow-x: hidden;
         }
+
         .navbar {
             background-color: #3f0e40;
             padding: 15px;
@@ -20,127 +24,205 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .navbar a {
             color: white;
             text-decoration: none;
             font-size: 18px;
             font-weight: bold;
         }
+
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
-            background: white;
+            background: #2e2e2e;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
         }
+
         .tabs {
             display: flex;
             justify-content: space-around;
-            background-color: #3f0e40;
+            background-color: #555;
             padding: 10px;
             border-radius: 5px;
         }
+
         .tab {
             color: white;
             padding: 10px 20px;
             cursor: pointer;
             font-size: 16px;
             border-radius: 5px;
+            transition: background 0.3s ease;
         }
+
         .tab.active {
-            background-color: #ffcc00;
+            background-color: #c2a763;
             color: black;
         }
+
         .claims-section {
             display: none;
             margin-top: 20px;
         }
+
         .claims-section.active {
             display: block;
         }
+
         .collection-item {
             padding: 15px;
             margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #555;
             border-radius: 5px;
-            background-color: white;
+            background-color: #3a3a3a;
         }
-        .collection-item.pending { border-left: 5px solid #ffc107; }
-        .collection-item.approved { border-left: 5px solid #28a745; }
-        .collection-item.rejected { border-left: 5px solid #dc3545; }
-        .title { font-weight: bold; display: block; }
-        .btn { padding: 5px 10px; color: white; text-decoration: none; border-radius: 3px; font-size: 14px; }
-        .btn.green { background-color: #28a745; }
-        .btn.red { background-color: #dc3545; }
+
+        .collection-item.pending {
+            border-left: 5px solid #555;
+        }
+
+        .collection-item.approved {
+            border-left: 5px solid #28a745;
+        }
+
+        .collection-item.rejected {
+            border-left: 5px solid #dc3545;
+        }
+
+        .title {
+            font-weight: bold;
+            display: block;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .btn.green {
+            background-color: #28a745;
+        }
+
+        .btn.red {
+            background-color: #dc3545;
+        }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #232323;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-nav .logo span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c2a763;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-left: 6px;
+        }
+
+        .image-logo {
+            height: 50px;
+            margin-right: 5px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
     </style>
 </head>
+
 <body>
-    <div class="navbar">
-        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-        <span>Claims Management</span>
+    <div class="top-nav">
+        <div class="logo-container logo">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="image-logo">
+            <span class="nav-title"> <a style="color: unset;text-decoration: none;" href="/admin_dashboard">DUT Admin</a></span>
+        </div>
+        <div class="">
+            <span>Claims Management</span>
+        </div>
     </div>
-    
+
     <div class="container">
         <h2 style="text-align: center;">View Claims</h2>
-        
+
         <div class="tabs">
-            <div class="tab active" onclick="showSection('pending')">Pending Claims</div>
-            <div class="tab" onclick="showSection('approved')">Approved Claims</div>
-            <div class="tab" onclick="showSection('rejected')">Rejected Claims</div>
+            <div class="tab active" data-section="pending" onclick="showSection('pending')">Pending Claims</div>
+            <div class="tab" data-section="approved" onclick="showSection('approved')">Approved Claims</div>
+            <div class="tab" data-section="rejected" onclick="showSection('rejected')">Rejected Claims</div>
         </div>
 
         <!-- Pending Claims -->
         <div id="pending" class="claims-section active">
             {% for claim in claims if claim.status == 'pending' %}
-                <div class="collection-item pending">
-                    <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
-                    <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
-                    <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
-                    <p><strong>Campus:</strong> {{ claim.campus }}</p>
-                    <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
-                    <div>
-                        <a href="{{ url_for('approve_claim', claim_id=claim.id) }}" class="btn green">Approve</a>
-                        <a href="{{ url_for('reject_claim', claim_id=claim.id) }}" class="btn red">Reject</a>
-                    </div>
+            <div class="collection-item pending">
+                <p><strong>Claimant:</strong> {{ claim.user.name }} {{ claim.user.surname }}</p>
+                <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
+                <p><strong>Item:</strong> {{ claim.lost_item.item_name }}</p>
+                <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
+                <p><strong>Campus:</strong> {{ claim.campus }}</p>
+                <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+                <div>
+                    <a href="{{ url_for('approve_claim', claim_id=claim.id) }}" class="btn green">Approve</a>
+                    <a href="{{ url_for('reject_claim', claim_id=claim.id) }}" class="btn red">Reject</a>
                 </div>
+            </div>
             {% endfor %}
         </div>
 
         <!-- Approved Claims -->
         <div id="approved" class="claims-section">
             {% for claim in claims if claim.status == 'approved' %}
-                <div class="collection-item approved">
-                    <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
-                    <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
-                    <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
-                    <p><strong>Campus:</strong> {{ claim.campus }}</p>
-                    <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
-                </div>
+            <div class="collection-item approved">
+                <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
+                <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
+                <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
+                <p><strong>Campus:</strong> {{ claim.campus }}</p>
+                <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+            </div>
             {% endfor %}
         </div>
 
         <!-- Rejected Claims -->
         <div id="rejected" class="claims-section">
             {% for claim in claims if claim.status == 'rejected' %}
-                <div class="collection-item rejected">
-                    <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
-                    <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
-                    <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
-                    <p><strong>Campus:</strong> {{ claim.campus }}</p>
-                    <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
-                </div>
+            <div class="collection-item rejected">
+                <span class="title">{{ claim.user.first_name }} {{ claim.user.last_name }}</span>
+                <p><strong>Extra Detail:</strong> {{ claim.extraDetail }}</p>
+                <p><strong>Lost Day:</strong> {{ claim.lost_day }}</p>
+                <p><strong>Campus:</strong> {{ claim.campus }}</p>
+                <p><strong>Claim Date:</strong> {{ claim.claim_date }}</p>
+            </div>
             {% endfor %}
         </div>
     </div>
-    
+
     <script>
         function showSection(section) {
+            // Hide all sections
             document.querySelectorAll('.claims-section').forEach(el => el.classList.remove('active'));
+            // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            // Show the selected section
             document.getElementById(section).classList.add('active');
-            document.querySelector(".tab[onclick='showSection(" + section + ")']").classList.add('active');
+            // Highlight the correct tab
+            document.querySelector(`.tab[data-section="${section}"]`).classList.add('active');
         }
     </script>
 </body>
+
 </html>

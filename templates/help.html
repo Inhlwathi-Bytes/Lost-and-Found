@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
 
         /* Top Navigation */
         nav {
-            background-color: #c2a763;
+            background-color: #232323;
             color: white;
             padding: 20px;
             display: flex;
@@ -77,7 +78,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 80px; /* Adjust for fixed top nav */
+            padding-top: 80px;
+            /* Adjust for fixed top nav */
         }
 
         .content-inner {
@@ -110,7 +112,7 @@
 
         /* Bottom Navigation */
         .bottom-nav {
-            background-color: #c2a763;
+            background-color: #232323;
             color: white;
             text-align: center;
             padding: 10px 0;
@@ -122,29 +124,43 @@
         }
     </style>
 </head>
+
 <body>
     <nav>
         <div class="logo-container">
             <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
-            <span class="nav-title"></span>
+            <span class="nav-title">
+                <a style="color: unset; text-decoration: none;" href="/admin_dashboard">
+                    {% if user.role == 'student' %}
+                    {{ user.name }} {{ user.surname }}
+                    {% else %}
+                    DUT Admin
+                    {% endif %}
+            </span>
         </div>
+
         <ul>
             <li><a href="/lost-items">LOST ITEMS</a></li>
+            {% if user.role == 'student' %}
+            <li><a href="/report-item">REPORT NEW</a></li>
+            {% endif %}
             <li><a href="/about">ABOUT</a></li>
             <li><a href="/help">HELP</a></li>
-            <li><a  href="{{ url_for('logout') }}">LOGOUT</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
         </ul>
     </nav>
 
     <div class="content">
         <div class="content-inner">
             <h2>Help & Support</h2>
-            <p>Welcome to the DUT Lost & Found Help page. Here you can find answers to frequently asked questions and get assistance with using our platform.</p>
+            <p>Welcome to the DUT Lost & Found Help page. Here you can find answers to frequently asked questions and
+                get assistance with using our platform.</p>
 
             <h3>Frequently Asked Questions</h3>
             <ul>
                 <li><strong>How do I report a lost item?</strong><br>
-                    To report a lost item, navigate to the "Report Lost Item" page and fill out the form with as much detail as possible. Include a photo if you have one.</li>
+                    To report a lost item, navigate to the "Report Lost Item" page and fill out the form with as much
+                    detail as possible. Include a photo if you have one.</li>
                 <li><strong>How do I search for a found item?</strong><br>
                     Use the search bar on the "Found Items" page to search by item name, category, or date.</li>
                 <li><strong>What happens after I report a lost item?</strong><br>
@@ -165,4 +181,5 @@
         &copy; 2025 Inhlwathi-Bytes Inc.
     </div>
 </body>
+
 </html>

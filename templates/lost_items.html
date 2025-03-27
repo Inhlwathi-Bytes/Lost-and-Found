@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
         }
 
         nav {
-            background-color: #c2a763;
+            background-color: #232323;
             color: white;
             padding: 20px;
             display: flex;
@@ -52,9 +53,7 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px auto;
+            min-height: 100vh;
             background-color: white;
             padding: 20px;
             border-radius: 10px;
@@ -78,7 +77,6 @@
             align-items: center;
             justify-content: space-between;
             border: 1px solid #ddd;
-            border-radius: 8px;
             padding-right: 10px;
             padding-block: 5px;
             background-color: #fff;
@@ -94,7 +92,7 @@
         }
 
         .item-image {
-            max-width: 120px;
+            width: 120px;
             height: 120px;
             object-fit: cover;
             border-radius: 5px;
@@ -145,17 +143,31 @@
         }
     </style>
 </head>
+
 <body>
     <nav>
         <div class="logo-container">
             <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
-            <span class="nav-title"></span>
+            <span class="nav-title">
+                {% if user.role == 'student' %}
+                <a style="color: unset; text-decoration: none;" href="/lost-items">
+                    {{ user.name }} {{ user.surname }}
+                </a>
+                {% else %}
+                <a style="color: unset; text-decoration: none;" href="/admin_dashboard">
+                    DUT Admin
+                </a>
+                {% endif %}
+            </span>
         </div>
         <ul>
             <li><a href="/lost-items">LOST ITEMS</a></li>
+            {% if user.role == 'student' %}
+            <li><a href="/report-item">REPORT NEW</a></li>
+            {% endif %}
             <li><a href="/about">ABOUT</a></li>
             <li><a href="/help">HELP</a></li>
-            <li><a  href="{{ url_for('logout') }}">LOGOUT</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
         </ul>
     </nav>
 
@@ -169,17 +181,21 @@
                 <div class="avatar">{{ item.category[0] if item.category else '?' }}</div>
                 {% endif %}
                 <div class="item-details">
-                    <p><strong>Item:</strong> {{ item.category }}</p>
+                    <p><strong>Category:</strong> {{ item.category }}</p>
                     <p><strong>Item:</strong> {{ item.item_name }}</p>
                     <p><strong>Description:</strong> {{ item.description }}</p>
                     <p><strong>Claimed:</strong> {{ item.claimed }}</p>
+                    <p><strong>Taken:</strong> {{ item.taken }}</p>
                 </div>
-                {% if user_role == 'student' %}
+                {% if user.role == 'student' %}
                 <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Claim Item</a>
+                {% else %}
+                <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Checkout</a>
                 {% endif %}
             </div>
             {% endfor %}
         </div>
     </div>
 </body>
+
 </html>

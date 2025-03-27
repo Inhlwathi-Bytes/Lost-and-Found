@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
             align-items: center;
             overflow-x: hidden;
         }
+
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -28,11 +30,13 @@
             z-index: 100;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         .top-nav .logo span {
             font-size: 20px;
             font-weight: bold;
             color: #c2a763;
         }
+
         .search-bar {
             padding: 8px;
             width: 300px;
@@ -41,9 +45,11 @@
             background-color: #1a1a1a;
             color: #c2a763;
         }
+
         .search-bar::placeholder {
             color: #c2a763;
         }
+
         .button-primary {
             background: transparent;
             border: 2px solid #c2a763;
@@ -55,10 +61,12 @@
             transition: all 0.3s;
             cursor: pointer;
         }
+
         .button-primary:hover {
             background: #c2a763;
             color: #232323;
         }
+
         .dashboard-container {
             display: flex;
             flex-wrap: wrap;
@@ -66,19 +74,24 @@
             margin-top: 20px;
             gap: 20px;
         }
+
         .card {
+            letter-spacing: 2px;
             background-color: #232323;
             width: 300px;
             padding: 30px;
+            min-height: 110px;
             border-radius: 10px;
             text-align: center;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .card:hover {
             transform: scale(1.1);
             box-shadow: 0px 0px 15px #c2a763;
         }
+
         .card a {
             text-decoration: none;
             color: #c2a763;
@@ -86,11 +99,14 @@
             font-weight: bold;
             display: block;
         }
+
         .card p {
             margin-top: 10px;
             font-size: 16px;
             color: #b39555;
+            text-align: left;
         }
+
         footer {
             background-color: #232323;
             color: #c2a763;
@@ -100,6 +116,7 @@
             position: fixed;
             bottom: 0;
         }
+
         .logo-container {
             display: flex;
             align-items: center;
@@ -115,49 +132,74 @@
             font-size: 1.2em;
         }
 
+        .new-item {
+            text-decoration: none;
+            color: #c2a763;
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            text-align: left;
+        }
     </style>
 </head>
+
 <body>
     <div class="top-nav">
         <div class="logo-container logo">
             <img src="/static/images/DUT.jpg" alt="DUT Logo" class="image-logo">
             <span class="nav-title">DUT Admin</span>
         </div>
-        <form action="{{ url_for('search') }}" method="get">
+        <div class="">
+            <span>Dashboard</span>
+        </div>
+        <!-- <form action="{{ url_for('search') }}" method="get">
             <input type="text" class="search-bar" name="query" placeholder="Search Lost Items...">
             <button type="submit" class="button-primary">Search</button>
-        </form>
+        </form> -->
     </div>
 
     <div class="dashboard-container">
-        <div class="card">
-            <a href="/add-item">Add New Item</a>
-            <p>Register a newly found item in the system.</p>
-        </div>
-        <div class="card">
-            <a href="/lost-items">Lost Items</a>
-            <p>View and manage all lost items.</p>
-        </div>
-        <div class="card">
-            <a href="/view-claims">View Claims</a>
-            <p>Check the claims submitted by users.</p>
-        </div>
-        <div class="card">
-            <a href="/view-reported-items">View Reported Items</a>
-            <p>Review items that have been reported.</p>
-        </div>
-        <div class="card">
-            <a href="/help">Help</a>
-            <p>Access support and user guidelines.</p>
-        </div>
-        <div class="card">
-            <a href="/logout">Logout</a>
-            <p>Sign out of the dashboard securely.</p>
-        </div>
+        <a href="/add-item" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <span class="new-item">Add New Item</span>
+                <p>Register a newly found item in the system. </p>
+            </div>
+        </a>
+        <a href="/lost-items" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <span class="new-item">Lost Items</span>
+                <p>View and manage all reported lost items in one place. </p>
+            </div>
+        </a>
+        <a href="/view-claims" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <span class="new-item">View Claims </span>
+                <p>Check the claims submitted by users for lost and found items.</p>
+            </div>
+        </a>
+        <a href="/view-reported-items" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <span class="new-item">View Reported Items</span>
+                <p>Review items that have been reported as lost. </p>
+            </div>
+        </a>
+        <a href="/help" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <span class="new-item">Help</span>
+                <p>Access support and user guidelines for navigating the lost and found system. </p>
+            </div>
+        </a>
+        <a href="/logout" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <span class="new-item">Logout </span>
+                <p>Sign out of the dashboard securely.</p>
+            </div>
+        </a>
     </div>
 
     <footer>
         <p>&copy; 2025 Inhlwathi-Bytes Inc.</p>
     </footer>
 </body>
+
 </html>

@@ -12,9 +12,9 @@ import secrets  # For generating secure tokens
 from datetime import datetime, timedelta  # For handling token expiration
 
 app = Flask(__name__, template_folder="templates")
-
+#"mysql+pymysql://admin:Evolution001220@lostandfound.cf0w6i0yko76.us-east-2.rds.amazonaws.com:3306/lostandfound"
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:Evolution001220@lostandfound.cf0w6i0yko76.us-east-2.rds.amazonaws.com:3306/lostandfound"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:Revolution00/12/20@localhost:3306/lostandfound"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Required for session management
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use your email provider's SMTP server
@@ -95,7 +95,7 @@ class ReportedItem(db.Model):
     # Define a relationship to the User model
     # reporter = db.relationship('User', backref='reported_items')
 
-  
+
 # User loader function for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
@@ -115,7 +115,7 @@ def load_user(user_id):
 with app.app_context():
     # db.session.add(admin_user)
     # db.session.commit()
-    print("✅ Admin user created successfully!")
+    # print("✅ Admin user created successfully!")
     print("Creating database tables...")
     db.create_all()  # Create all tables from the models
     print("Database tables created successfully!")
@@ -134,11 +134,11 @@ def home():
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html', user=current_user)
 
 @app.route('/help')
 def help_page():
-    return render_template('help.html')
+    return render_template('help.html', user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -220,7 +220,7 @@ def register():
 @login_required
 def lostitems():
     items = LostItem.query.filter_by().all() 
-    return render_template('lost_items.html', items=items, user_role=current_user.role)
+    return render_template('lost_items.html', items=items, user=current_user)
 
 @app.route('/add-item', methods=['GET', 'POST'])
 @login_required
@@ -262,7 +262,7 @@ def add_item():
         flash('Item added successfully!', 'success')
         return redirect(url_for('lostitems'))
 
-    return render_template('add_item.html')
+    return render_template('add_item.html', user=current_user)
 
 @app.route('/admin_dashboard')
 @login_required
@@ -351,7 +351,7 @@ def view_claims():
         return redirect(url_for('home'))
 
     claims = Claim.query.all()
-    return render_template('view_claims.html', claims=claims)
+    return render_template('view_claims.html', claims=claims, user=current_user)
     
 # Forgot password route
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -464,7 +464,7 @@ def report_item():
         item_name = request.form.get('item_name')
         photo = request.files.get('photo')
         date_found = request.form.get('date_found')
-        location_found = request.form.get('location_found')
+        campus = request.form.get('campus')
 
         # Save the uploaded photo
         photo_path = None
@@ -477,7 +477,7 @@ def report_item():
             item_name=item_name,
             photo=photo_path,
             date_found=date_found,
-            location_found=location_found,
+            campus=campus,
             user_id=current_user.id  # Automatically set the user who reported the item
         )
         db.session.add(new_report)
@@ -486,7 +486,7 @@ def report_item():
         flash('Item reported successfully!', 'success')
         return redirect(url_for('student_dashboard'))
 
-    return render_template('report_item.html')
+    return render_template('report_item.html', user=current_user)
 
 @app.route('/view-reported-items')
 @login_required
@@ -500,10 +500,7 @@ def view_reported_items():
         User.name.label('reporter_name')
     ).join(User, ReportedItem.user_id == User.id).all()
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return render_template('view_reported_items.html', reported_items=reported_items)
-    else:
-        return render_template('admin_dashboard.html', active_page='view-reported-items', reported_items=reported_items)
+    return render_template('view_reported_items.html', reported_items=reported_items, user=current_user)
 
 
 @app.route('/approve-reported-item/<int:item_id>')
@@ -615,6 +612,6 @@ def view_my_claims():
     return render_template('my_claims.html', claim_details=claim_details)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Default to 10000 if PORT isn't set
-    app.run(host="0.0.0.0", port=port, debug=True)
-    # app.run(debug=True)
+    # port = int(os.environ.get("PORT", 10000))  # Default to 10000 if PORT isn't set
+    # app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(debug=True)

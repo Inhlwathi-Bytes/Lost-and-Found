@@ -1,51 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Reported Items</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            background-color: #f8f9fa;
         }
+
         .container {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 900px;
+            margin: 30px auto;
             padding: 20px;
             background: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
+        h2 {
+            text-align: center;
+            color: #3f0e40;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        table, th, td {
-            border: 1px solid #ddd;
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
+
         th {
-            background-color: #3f0e40;
+            background-color: #555;
             color: white;
+            font-weight: bold;
         }
+
+        tr:nth-child(even) {
+            background-color: #f4e6f7;
+        }
+
+        tr:hover {
+            background-color: #e5d4ea;
+            transition: 0.3s ease-in-out;
+        }
+
         .btn {
-            background-color: #3f0e40;
+            background-color: #787578;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 12px;
             text-decoration: none;
             border-radius: 5px;
+            display: inline-block;
+            transition: 0.3s;
         }
+
         .btn:hover {
             background-color: #5e2c60;
         }
+
+        img {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        nav {
+            background-color: #232323;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
+
     </style>
 </head>
+
 <body>
+    <nav>
+        <div class="logo-container">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title">
+                <a style="color: unset; text-decoration: none;" href="/admin_dashboard">
+                    {% if user.role == 'student' %}
+                    {{ user.name }} {{ user.surname }}
+                    {% else %}
+                    DUT Admin
+                    {% endif %}
+                </a>
+            </span>
+        </div>
+
+        <ul>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            {% if user.role == 'student' %}
+            <li><a href="/report-item">REPORT NEW</a></li>
+            {% endif %}
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/help">HELP</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </nav>
+
+
     <div class="container">
         <h2>Reported Items</h2>
         <table>
@@ -54,35 +150,34 @@
                     <th>Item Name</th>
                     <th>Photo</th>
                     <th>Date Found</th>
-                    <th>Location Found</th>
+                    <th>Campus</th>
                     <th>Reported By</th>
-                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item, reporter_name in reported_items %}
-                    <tr>
-                        <td>{{ item.item_name }}</td>
-                        <td>
-                            {% if item.photo %}
-                                <img src="{{ url_for('static', filename=item.photo) }}" alt="Item Photo" width="100">
-                            {% else %}
-                                No Photo
-                            {% endif %}
-                        </td>
-                        <td>{{ item.date_found }}</td>
-                        <td>{{ item.location_found }}</td>
-                        <td>{{ reporter_name }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>
-                            <a href="{{ url_for('approve_reported_item', item_id=item.id) }}" class="btn">Approve</a>
-                            <a href="{{ url_for('reject_reported_item', item_id=item.id) }}" class="btn">Reject</a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>
+                        {% if item.photo %}
+                        <img src="{{ url_for('static', filename=item.photo) }}" alt="Item Photo" width="80">
+                        {% else %}
+                        No Photo
+                        {% endif %}
+                    </td>
+                    <td>{{ item.date_found }}</td>
+                    <td>{{ item.campus }}</td>
+                    <td>{{ reporter_name }}</td>
+                    <td>
+                        <a href="{{ url_for('approve_reported_item', item_id=item.id) }}" class="btn">Approve</a>
+                        <a href="{{ url_for('reject_reported_item', item_id=item.id) }}" class="btn">Reject</a>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </body>
+
 </html>
