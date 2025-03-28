@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Checkout Item</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #3f0e40;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], 
+        button {
+            width: 80%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3f0e40;
+            color: white;
+            cursor: pointer;
+            border: none;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #5e2c60;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em !important;
+            padding-block: 0px !important;
+        }
+        nav {
+            background-color: #232323;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title"> {% if user.role == 'student' %}
+                <a style="color: unset; text-decoration: none;" href="/lost-items">
+                    {{ user.name }} {{ user.surname }}
+                </a>
+                {% else %}
+                <a style="color: unset; text-decoration: none;" href="/admin_dashboard">
+                    DUT Admin
+                </a>
+                {% endif %}</span>
+        </div>
+        <ul>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            <li><a href="/report-item">REPORT NEW</a></li>
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/help">HELP</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </nav>
+
+<div class="container">
+    
+    <h2>Checkout Item</h2>
+    <form method="POST">
+        <label for="checked_out_by">Checked Out By:</label>
+        <input type="text" id="checked_out_by" name="checked_out_by" required>
+        <button type="submit">Checkout</button>
+    </form>
+</div>
+
+</body>
+</html>

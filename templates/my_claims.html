@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             padding: 0;
             background-color: #f0f2f5;
         }
+
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -18,6 +20,7 @@
             background: white;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -27,9 +30,11 @@
             border-radius: 5px;
             margin-top: 20px;
         }
+
         .btn:hover {
             background-color: #5e2c60;
         }
+
         .claim-item {
             margin-bottom: 20px;
             padding: 15px;
@@ -37,43 +42,115 @@
             border-radius: 5px;
             background-color: #f9f9f9;
         }
+
         .claim-item.approved {
             border-left: 5px solid #28a745;
         }
+
         .claim-item.rejected {
             border-left: 5px solid #dc3545;
         }
+
         .claim-item.pending {
             border-left: 5px solid #ffc107;
         }
+        nav {
+            background-color: #232323;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .nav-title {
+            font-size: 1.2em;
+        }
+
+        .dut-badge {
+            height: 50px;
+        }
     </style>
 </head>
+
 <body>
+    <nav>
+        <div class="logo-container">
+            <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
+            <span class="nav-title">
+                <a style="color: unset; text-decoration: none;" href="/admin_dashboard">
+                    {% if user.role == 'student' %}
+                    {{ user.name }} {{ user.surname }}
+                    {% else %}
+                    DUT Admin
+                    {% endif %}
+            </span>
+        </div>
+
+        <ul>
+            <li><a href="/lost-items">LOST ITEMS</a></li>
+            {% if user.role == 'student' %}
+            <li><a href="/report-item">REPORT NEW</a></li>
+            <li><a href="/my-claims">MY CLAIMS</a></li>
+            {% endif %}
+            <li><a href="/about">ABOUT</a></li>
+            <li><a href="/help">HELP</a></li>
+            <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <h2>My Claims</h2>
         <ul>
             {% for detail in claim_details %}
-                <li class="claim-item {{ detail.claim.status }}">
-                    <strong>Student Name:</strong> {{ detail.claim.student_name }}<br>
-                    <strong>Student Number:</strong> {{ detail.claim.student_number }}<br>
-                    <strong>Status:</strong> {{ detail.claim.status }}<br>
-                    {% if detail.claim.status == 'approved' %}
-                        <p style="color: #28a745;">
-                            Approved. Come fetch your item at Lost & Found Office in <strong>{{ detail.campus }}</strong>.
-                        </p>
-                    {% elif detail.claim.status == 'rejected' %}
-                        <p style="color: #dc3545;">
-                            Rejected. Please contact the Lost & Found Office for more details.
-                        </p>
-                    {% else %}
-                        <p style="color: #ffc107;">
-                            Pending. Your claim is under review.
-                        </p>
-                    {% endif %}
-                </li>
+            <li class="claim-item {{ detail.claim.status }}">
+                <strong>Student Name:</strong> {{ detail.claim.student_name }}<br>
+                <strong>Student Number:</strong> {{ detail.claim.student_number }}<br>
+                <strong>Status:</strong> {{ detail.claim.status }}<br>
+                {% if detail.claim.status == 'approved' %}
+                <p style="color: #28a745;">
+                    Approved. Come fetch your item at Lost & Found Office in <strong>{{ detail.campus }}</strong>.
+                </p>
+                {% elif detail.claim.status == 'rejected' %}
+                <p style="color: #dc3545;">
+                    Rejected. Please contact the Lost & Found Office for more details.
+                </p>
+                {% else %}
+                <p style="color: #ffc107;">
+                    Pending. Your claim is under review.
+                </p>
+                {% endif %}
+            </li>
             {% endfor %}
         </ul>
-        <a href="{{ url_for('student_dashboard') }}" class="btn">Back to Dashboard</a>
+        <a href="{{ url_for('lostitems') }}" class="btn">Back to Lost Items</a>
     </div>
 </body>
+
 </html>

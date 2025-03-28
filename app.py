@@ -13,8 +13,9 @@ from datetime import datetime, timedelta  # For handling token expiration
 
 app = Flask(__name__, template_folder="templates")
 #"mysql+pymysql://admin:Evolution001220@lostandfound.cf0w6i0yko76.us-east-2.rds.amazonaws.com:3306/lostandfound"
+#"mysql+pymysql://root:Revolution00/12/20@localhost:3306/lostandfound"
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:Revolution00/12/20@localhost:3306/lostandfound"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:Evolution001220@lostandfound.cf0w6i0yko76.us-east-2.rds.amazonaws.com:3306/lostandfound"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key_here'  # Required for session management
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use your email provider's SMTP server
@@ -71,6 +72,7 @@ class LostItem(db.Model):
     campus = db.Column(db.String(100), nullable=False)
     photo = db.Column(db.String(200), nullable=True)
     taken = db.Column(db.Boolean, default=False)
+    taken_by = db.Column(db.String(100), default=False)
     claimed = db.Column(db.Boolean, default=False)
     claims = db.relationship('Claim', backref='lost_item', lazy=True)  # One-to-Many
 
@@ -212,7 +214,7 @@ def register():
         db.session.commit()
 
         flash('Account successfully created!', 'success')
-        return redirect(url_for('student_dashboard'))  # Redirect to student dashboard
+        return redirect(url_for('lostitems'))  # Redirect to student dashboard
 
     return render_template('register.html')
 
@@ -308,7 +310,6 @@ def student_dashboard():
 @app.route('/claim-item/<int:item_id>', methods=['GET', 'POST'])
 @login_required
 def claim_item(item_id):
-    print("nethos starts here")
     item = LostItem.query.get_or_404(item_id)
 
     if current_user.role != 'student':
@@ -341,7 +342,33 @@ def claim_item(item_id):
         flash('Claim submitted successfully!', 'success')
         return redirect(url_for('lostitems'))
 
-    return render_template('claim_item.html', item=item)
+    return render_template('claim_item.html', item=item, user=current_user)
+
+
+@app.route('/checkout-item/<int:item_id>', methods=['GET', 'POST'])
+@login_required
+def checkout_item(item_id):
+    item = LostItem.query.get_or_404(item_id)  # Fetch LostItem by ID
+
+    if current_user.role != 'admin':
+        flash('Only Admins can checkout items.', 'error')
+        return redirect(url_for('lostitems'))
+
+    if request.method == 'POST':
+        # Get the "Checked Out By" input value
+        checked_out_by = request.form.get('checked_out_by')
+
+        # Update the lost item's claimed, taken, and taken_by fields
+        item.claimed = True
+        item.taken = True
+        item.taken_by = checked_out_by  # Store the value in taken_by
+        db.session.commit()
+
+        flash(f'Item successfully checked out by {checked_out_by}!', 'success')
+        return redirect(url_for('lostitems'))
+
+    return render_template('admin_checkout.html', item=item, user=current_user)
+
 
 @app.route('/view-claims')
 @login_required
@@ -577,6 +604,27 @@ def view_lost_item(item_id):
     item = LostItem.query.get_or_404(item_id)
     return render_template('view_lost_item.html', item=item)
 
+@app.route('/delete-lost-item/<int:item_id>')
+@login_required
+def delete_lost_item(item_id):
+    print("im here", item_id)
+
+    item = LostItem.query.get_or_404(item_id)
+    print("im here", item.category)
+
+    # Check if the item is taken and the user is an admin
+    if item.taken and current_user.role == 'admin':
+        # Delete all claims associated with the lost item
+        Claim.query.filter_by(lost_item_id=item.id).delete()
+
+        # Delete the lost item itself
+        db.session.delete(item)
+        db.session.commit()
+
+        flash("Lost item and its claims have been deleted.", "success")
+
+    return redirect(url_for('lostitems'))
+
 @app.route('/claim/<int:claim_id>')
 @login_required
 def view_claim(claim_id):
@@ -609,9 +657,9 @@ def view_my_claims():
             'campus': campus
         })
 
-    return render_template('my_claims.html', claim_details=claim_details)
+    return render_template('my_claims.html', claim_details=claim_details, user=current_user)
 
 if __name__ == "__main__":
-    # port = int(os.environ.get("PORT", 10000))  # Default to 10000 if PORT isn't set
-    # app.run(host="0.0.0.0", port=port, debug=True)
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))  # Default to 10000 if PORT isn't set
+    app.run(host="0.0.0.0", port=port, debug=True)
+    # app.run(debug=True)

@@ -164,6 +164,7 @@
             <li><a href="/lost-items">LOST ITEMS</a></li>
             {% if user.role == 'student' %}
             <li><a href="/report-item">REPORT NEW</a></li>
+            <li><a href="/my-claims">MY CLAIMS</a></li>
             {% endif %}
             <li><a href="/about">ABOUT</a></li>
             <li><a href="/help">HELP</a></li>
@@ -184,13 +185,22 @@
                     <p><strong>Category:</strong> {{ item.category }}</p>
                     <p><strong>Item:</strong> {{ item.item_name }}</p>
                     <p><strong>Description:</strong> {{ item.description }}</p>
+                    <p><strong>Founder:</strong> {{ item.found_by }}</p>
+                    {% if item.taken %}
+                    <p><strong>Taken By:</strong> {{ item.taken_by }}</p>
+                    {% endif %}
                     <p><strong>Claimed:</strong> {{ item.claimed }}</p>
                     <p><strong>Taken:</strong> {{ item.taken }}</p>
                 </div>
                 {% if user.role == 'student' %}
                 <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Claim Item</a>
                 {% else %}
-                <a href="{{ url_for('claim_item', item_id=item.id) }}" class="claim-button">Checkout</a>
+                {% if item.taken == False %}
+                <a href="{{ url_for('checkout_item', item_id=item.id) }}" class="claim-button">Checkout</a>
+                {% endif %}
+                {% endif %}
+                {% if user.role == 'admin' and item.taken %}
+                <a href="{{ url_for('delete_lost_item', item_id=item.id) }}" class="claim-button">Delete</a>
                 {% endif %}
             </div>
             {% endfor %}

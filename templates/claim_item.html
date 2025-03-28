@@ -54,7 +54,8 @@
         }
 
         .nav-title {
-            font-size: 1.2em;
+            font-size: 1.2em !important;
+            padding-block: 0px !important;
         }
 
         @media only screen and (min-width: 601px) {
@@ -119,7 +120,15 @@
     <nav>
         <div class="logo-container">
             <img src="/static/images/DUT.jpg" alt="DUT Logo" class="logo">
-            <span class="nav-title"></span>
+            <span class="nav-title"> {% if user.role == 'student' %}
+                <a style="color: unset; text-decoration: none;" href="/lost-items">
+                    {{ user.name }} {{ user.surname }}
+                </a>
+                {% else %}
+                <a style="color: unset; text-decoration: none;" href="/admin_dashboard">
+                    DUT Admin
+                </a>
+                {% endif %}</span>
         </div>
         <ul>
             <li><a href="/lost-items">LOST ITEMS</a></li>
